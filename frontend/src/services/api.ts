@@ -56,6 +56,12 @@ export const authService = {
     } catch (error) {
       throw new Error('Login failed');
     }
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(authUser));
+      return authUser;
+    } catch (error) {
+      throw new Error('Login failed');
+    }
   },
   
   logout: () => {
