@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AuthUser } from '@/types';
+import { AuthUser, User } from '@/types';
 
 const API_BASE_URL = 'http://localhost:8080/api';
 
@@ -37,19 +37,25 @@ export default api;
 // Auth service
 export const authService = {
   login: async (username: string, password: string): Promise<AuthUser> => {
-    // Mock login - replace with actual API call
-    const mockUser: AuthUser = {
-      id: 1,
-      username,
-      role: 'ADMINISTRATOR',
-      name: 'Admin User',
-      email: 'admin@hospital.com',
-      token: 'mock-jwt-token'
-    };
-    
-    localStorage.setItem('token', mockUser.token);
-    localStorage.setItem('user', JSON.stringify(mockUser));
-    return mockUser;
+    try {
+      const response = await api.post('/auth/login', { username, password });
+      const { token, user } = response.data;
+      
+      const authUser: AuthUser = {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+        name: user.name,
+        email: user.email,
+        token: token
+      };
+      
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(authUser));
+      return authUser;
+    } catch (error) {
+      throw new Error('Login failed');
+    }
   },
   
   logout: () => {
