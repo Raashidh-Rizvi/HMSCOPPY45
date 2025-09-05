@@ -34,7 +34,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, currentPath, onNavigate }) =>
       case 'ADMINISTRATOR':
         return [
           ...baseItems,
-          { icon: Users, label: 'Staff Management', path: '/staff' },
+          { icon: Users, label: 'Staff', path: '/staff' },
+          { icon: Users, label: 'Patients', path: '/patients' },
+          { icon: Calendar, label: 'Appointments', path: '/appointments' },
+          { icon: FileText, label: 'Records', path: '/records' },
+          { icon: Pill, label: 'Prescriptions', path: '/prescriptions' },
+          { icon: CreditCard, label: 'Billing', path: '/billing' },
+          { icon: Package, label: 'Inventory', path: '/inventory' },
+          { icon: Heart, label: 'Vital Signs', path: '/vitals' },
           { icon: BarChart3, label: 'Reports', path: '/reports' },
           { icon: Settings, label: 'Settings', path: '/settings' },
         ];
@@ -49,23 +56,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, currentPath, onNavigate }) =>
         return [
           ...baseItems,
           { icon: Users, label: 'Patients', path: '/patients' },
-          { icon: FileText, label: 'Medical Records', path: '/records' },
+          { icon: FileText, label: 'Records', path: '/records' },
           { icon: Pill, label: 'Prescriptions', path: '/prescriptions' },
-          { icon: Calendar, label: 'Schedule', path: '/schedule' },
+          { icon: Calendar, label: 'Appointments', path: '/appointments' },
         ];
       case 'NURSE':
         return [
           ...baseItems,
           { icon: Users, label: 'Patients', path: '/patients' },
+          { icon: FileText, label: 'Records', path: '/records' },
           { icon: Heart, label: 'Vital Signs', path: '/vitals' },
-          { icon: Package, label: 'Supply Requests', path: '/supplies' },
+          { icon: Calendar, label: 'Appointments', path: '/appointments' },
         ];
       case 'PHARMACIST':
         return [
           ...baseItems,
           { icon: Package, label: 'Inventory', path: '/inventory' },
           { icon: Pill, label: 'Prescriptions', path: '/prescriptions' },
-          { icon: Package, label: 'Restock Orders', path: '/restock' },
         ];
       default:
         return baseItems;

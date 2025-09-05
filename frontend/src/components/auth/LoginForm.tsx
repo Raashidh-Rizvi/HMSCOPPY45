@@ -90,30 +90,41 @@ const LoginForm: React.FC = () => {
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </Button>
                 </div>
-              </div>
+          <Card className="shadow-2xl border-0 backdrop-blur-sm bg-white/95 dark:bg-navy-900/95">
 
               <motion.div
                 whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                className="w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg"
               >
                 <Button
                   type="submit"
-                  className="w-full h-12 bg-teal-500 hover:bg-teal-600 text-white font-medium"
+                  className="w-full h-12 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-medium shadow-lg transition-all duration-200"
                   disabled={isLoading}
                 >
                   {isLoading ? 'Signing in...' : 'Sign In'}
                 </Button>
               </motion.div>
-            </form>
+              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-navy-900 to-teal-600 bg-clip-text text-transparent dark:from-white dark:to-teal-400">
 
-            <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-navy-800/50 -mx-6 -mb-6 px-6 pb-6 rounded-b-lg">
               <div className="text-center text-sm text-gray-500 dark:text-gray-400">
                 <p className="mb-2">Demo Credentials:</p>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div>Admin: admin/admin</div>
-                  <div>Doctor: doctor/doctor</div>
-                  <div>Nurse: nurse/nurse</div>
-                  <div>Receptionist: reception/reception</div>
+                <div className="grid grid-cols-1 gap-2 text-xs space-y-1">
+                  <div className="p-2 bg-white dark:bg-navy-700 rounded border">
+                    <strong>Admin:</strong> admin / admin
+                  </div>
+                  <div className="p-2 bg-white dark:bg-navy-700 rounded border">
+                    <strong>Doctor:</strong> doctor / doctor
+                  </div>
+                  <div className="p-2 bg-white dark:bg-navy-700 rounded border">
+                    <strong>Nurse:</strong> nurse / nurse
+                  </div>
+                  <div className="p-2 bg-white dark:bg-navy-700 rounded border">
+                    <strong>Receptionist:</strong> reception / reception
+                  </div>
+                  <div className="p-2 bg-white dark:bg-navy-700 rounded border">
+                    <strong>Pharmacist:</strong> pharmacist / pharmacist
+                  </div>
                 </div>
               </div>
             </div>
