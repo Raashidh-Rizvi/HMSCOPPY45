@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthProvider } from '@/context/AuthContext';
+import {AuthProvider, useAuth} from '@/context/AuthContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import ProtectedRoute from '@/components/common/ProtectedRoute';
 import Layout from '@/components/layout/Layout';

@@ -1,6 +1,8 @@
 import api from './api';
 import { Appointment } from '@/types';
 
+
+
 export const appointmentService = {
   getAll: () => api.get<Appointment[]>('/appointments'),
   getById: (id: number) => api.get<Appointment>(`/appointments/${id}`),
