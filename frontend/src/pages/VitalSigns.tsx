@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Search, Heart, Thermometer, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,41 +9,31 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { VitalSignsLog } from '@/types';
+import api from '@/services/api';
 
 const VitalSigns: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [vitalSigns, setVitalSigns] = useState<VitalSignsLog[]>([]);
+  const [patients, setPatients] = useState([]);
 
-  // Mock data
-  const vitalSigns: VitalSignsLog[] = [
-    {
-      id: 1,
-      nurse: {
-        id: 3,
-        username: 'nurse.wilson',
-        role: 'NURSE',
-        name: 'Nurse Wilson',
-        email: 'wilson@hospital.com',
-        phone: '+1-555-0321'
-      },
-      patient: {
-        id: 1,
-        firstName: 'John',
-        lastName: 'Doe',
-        dob: '1985-06-15',
-        gender: 'Male',
-        address: '123 Main St',
-        phone: '+1-555-0123',
-        email: 'john.doe@email.com',
-        registrationDate: '2024-01-15'
-      },
-      temperature: 98.6,
-      bloodPressure: '120/80',
-      heartRate: 72,
-      respiratoryRate: 16,
-      logDateTime: '2024-12-20T08:30:00'
-    },
-  ];
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const [vitalSignsRes, patientsRes] = await Promise.all([
+        api.get('/vital-signs'),
+        api.get('/patients')
+      ]);
+      
+      setVitalSigns(vitalSignsRes.data);
+      setPatients(patientsRes.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   const getVitalStatus = (vital: VitalSignsLog) => {
     // Simple vital signs assessment
@@ -57,6 +48,28 @@ const VitalSigns: React.FC = () => {
     return { status: 'Normal', color: 'text-green-600 bg-green-50 dark:bg-green-900/20' };
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    
+    const vitalData = {
+      patient: { id: parseInt(formData.get('patientId') as string) },
+      nurse: { id: 3 }, // Assuming current user is nurse
+      temperature: parseFloat(formData.get('temperature') as string),
+      bloodPressure: formData.get('bloodPressure') as string,
+      heartRate: parseInt(formData.get('heartRate') as string),
+      respiratoryRate: parseInt(formData.get('respiratoryRate') as string),
+      logDateTime: new Date().toISOString(),
+    };
+
+    try {
+      await api.post('/vital-signs', vitalData);
+      setIsDialogOpen(false);
+      fetchData();
+    } catch (error) {
+      console.error('Error saving vital signs:', error);
+    }
+  };
   return (
     <div className="space-y-6">
       <motion.div
@@ -200,30 +213,40 @@ const VitalSigns: React.FC = () => {
           <DialogHeader>
             <DialogTitle>Record Vital Signs</DialogTitle>
           </DialogHeader>
-          <form className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="patient">Patient</Label>
-              <Input
-                id="patient"
-                placeholder="Select patient"
-              />
+              <Label htmlFor="patientId">Patient</Label>
+              <select
+                name="patientId"
+                className="w-full p-2 border rounded-md"
+                required
+              >
+                <option value="">Select Patient</option>
+                {patients.map((patient: any) => (
+                  <option key={patient.id} value={patient.id}>
+                    {patient.firstName} {patient.lastName}
+                  </option>
+                ))}
+              </select>
             </div>
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="temperature">Temperature (°F)</Label>
                 <Input
-                  id="temperature"
+                  name="temperature"
                   type="number"
                   step="0.1"
                   placeholder="98.6"
+                  required
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="bloodPressure">Blood Pressure</Label>
                 <Input
-                  id="bloodPressure"
+                  name="bloodPressure"
                   placeholder="120/80"
+                  required
                 />
               </div>
             </div>
@@ -232,23 +255,25 @@ const VitalSigns: React.FC = () => {
               <div className="space-y-2">
                 <Label htmlFor="heartRate">Heart Rate (bpm)</Label>
                 <Input
-                  id="heartRate"
+                  name="heartRate"
                   type="number"
                   placeholder="72"
+                  required
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="respiratoryRate">Respiratory Rate (/min)</Label>
                 <Input
-                  id="respiratoryRate"
+                  name="respiratoryRate"
                   type="number"
                   placeholder="16"
+                  required
                 />
               </div>
             </div>
 
             <div className="flex justify-end space-x-2 pt-4">
-              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
               <Button type="submit" className="bg-teal-500 hover:bg-teal-600">

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Search, Edit, Trash2, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,37 +9,26 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Patient } from '@/types';
+import api from '@/services/api';
 
 const Patients: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [patients, setPatients] = useState<Patient[]>([]);
 
-  // Mock data
-  const patients: Patient[] = [
-    {
-      id: 1,
-      firstName: 'John',
-      lastName: 'Doe',
-      dob: '1985-06-15',
-      gender: 'Male',
-      address: '123 Main St, City',
-      phone: '+1-555-0123',
-      email: 'john.doe@email.com',
-      registrationDate: '2024-01-15'
-    },
-    {
-      id: 2,
-      firstName: 'Jane',
-      lastName: 'Smith',
-      dob: '1990-03-22',
-      gender: 'Female',
-      address: '456 Oak Ave, City',
-      phone: '+1-555-0456',
-      email: 'jane.smith@email.com',
-      registrationDate: '2024-01-20'
-    },
-  ];
+  useEffect(() => {
+    fetchPatients();
+  }, []);
+
+  const fetchPatients = async () => {
+    try {
+      const response = await api.get('/patients');
+      setPatients(response.data);
+    } catch (error) {
+      console.error('Error fetching patients:', error);
+    }
+  };
 
   const filteredPatients = patients.filter(patient =>
     `${patient.firstName} ${patient.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -55,6 +45,45 @@ const Patients: React.FC = () => {
     setIsDialogOpen(true);
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    
+    const patientData = {
+      firstName: formData.get('firstName') as string,
+      lastName: formData.get('lastName') as string,
+      dob: formData.get('dob') as string,
+      gender: formData.get('gender') as string,
+      address: formData.get('address') as string,
+      phone: formData.get('phone') as string,
+      email: formData.get('email') as string,
+      registrationDate: new Date().toISOString().split('T')[0],
+    };
+
+    try {
+      if (selectedPatient) {
+        await api.put(`/patients/${selectedPatient.id}`, patientData);
+      } else {
+        await api.post('/patients', patientData);
+      }
+      
+      setIsDialogOpen(false);
+      fetchPatients();
+    } catch (error) {
+      console.error('Error saving patient:', error);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (window.confirm('Are you sure you want to delete this patient?')) {
+      try {
+        await api.delete(`/patients/${id}`);
+        fetchPatients();
+      } catch (error) {
+        console.error('Error deleting patient:', error);
+      }
+    }
+  };
   return (
     <div className="space-y-6">
       <motion.div
@@ -125,7 +154,12 @@ const Patients: React.FC = () => {
                       <Button variant="ghost" size="icon" onClick={() => handleEdit(patient)}>
                         <Edit className="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="text-red-500 hover:text-red-700"
+                        onClick={() => handleDelete(patient.id)}
+                      >
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
@@ -145,22 +179,24 @@ const Patients: React.FC = () => {
               {selectedPatient ? 'Edit Patient' : 'Add New Patient'}
             </DialogTitle>
           </DialogHeader>
-          <form className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
                 <Input
-                  id="firstName"
+                  name="firstName"
                   defaultValue={selectedPatient?.firstName}
                   placeholder="Enter first name"
+                  required
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="lastName">Last Name</Label>
                 <Input
-                  id="lastName"
+                  name="lastName"
                   defaultValue={selectedPatient?.lastName}
                   placeholder="Enter last name"
+                  required
                 />
               </div>
             </div>
@@ -169,27 +205,35 @@ const Patients: React.FC = () => {
               <div className="space-y-2">
                 <Label htmlFor="dob">Date of Birth</Label>
                 <Input
-                  id="dob"
+                  name="dob"
                   type="date"
                   defaultValue={selectedPatient?.dob}
+                  required
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="gender">Gender</Label>
-                <Input
-                  id="gender"
+                <select
+                  name="gender"
                   defaultValue={selectedPatient?.gender}
-                  placeholder="Enter gender"
-                />
+                  className="w-full p-2 border rounded-md"
+                  required
+                >
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="address">Address</Label>
               <Input
-                id="address"
+                name="address"
                 defaultValue={selectedPatient?.address}
                 placeholder="Enter address"
+                required
               />
             </div>
 
@@ -197,24 +241,26 @@ const Patients: React.FC = () => {
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone</Label>
                 <Input
-                  id="phone"
+                  name="phone"
                   defaultValue={selectedPatient?.phone}
                   placeholder="Enter phone number"
+                  required
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
-                  id="email"
+                  name="email"
                   type="email"
                   defaultValue={selectedPatient?.email}
                   placeholder="Enter email"
+                  required
                 />
               </div>
             </div>
 
             <div className="flex justify-end space-x-2 pt-4">
-              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
               <Button type="submit" className="bg-teal-500 hover:bg-teal-600">

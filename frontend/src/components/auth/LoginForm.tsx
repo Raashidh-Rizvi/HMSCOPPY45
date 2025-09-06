@@ -20,8 +20,10 @@ const LoginForm: React.FC = () => {
 
     try {
       await login(username, password);
+      // Navigation will be handled by the AuthContext/ProtectedRoute
     } catch (error) {
       console.error('Login failed:', error);
+      alert('Login failed. Please check your credentials.');
     } finally {
       setIsLoading(false);
     }
