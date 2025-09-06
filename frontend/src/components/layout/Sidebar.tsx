@@ -86,22 +86,22 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, currentPath, onNavigate }) =>
       initial={false}
       animate={{ width: isOpen ? 256 : 80 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="bg-white dark:bg-navy-900 border-r border-gray-200 dark:border-navy-700 h-full flex flex-col"
+      className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-r border-slate-200 dark:border-slate-700 h-full flex flex-col shadow-lg"
     >
-      <div className="p-6 border-b border-gray-200 dark:border-navy-700">
+      <div className="p-6 border-b border-slate-200 dark:border-slate-700">
         <motion.div
           initial={false}
           animate={{ opacity: isOpen ? 1 : 0 }}
           transition={{ duration: 0.2 }}
           className="flex items-center space-x-3"
         >
-          <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
             <Stethoscope className="w-5 h-5 text-white" />
           </div>
           {isOpen && (
             <div>
-              <h1 className="text-xl font-bold text-navy-900 dark:text-white">HMS</h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Hospital Management</p>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">HMS</h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Hospital Management</p>
             </div>
           )}
         </motion.div>
@@ -122,8 +122,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, currentPath, onNavigate }) =>
                   className={cn(
                     "w-full flex items-center space-x-3 px-3 py-3 rounded-lg transition-colors",
                     isActive 
-                      ? "bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400" 
-                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-navy-800"
+                      ? "bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 text-blue-600 dark:text-blue-400 shadow-sm" 
+                      : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50"
                   )}
                 >
                   <Icon className="w-5 h-5 flex-shrink-0" />

@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import api from '@/services/api';
+import { useEffect } from 'react';
 
 const Appointments: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');

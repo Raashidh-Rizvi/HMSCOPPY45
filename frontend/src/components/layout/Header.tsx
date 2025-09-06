@@ -18,7 +18,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
     <motion.header
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="bg-white dark:bg-navy-900 border-b border-gray-200 dark:border-navy-700 px-6 py-4"
+      className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 px-6 py-4 shadow-sm"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
@@ -26,16 +26,16 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
             variant="ghost"
             size="icon"
             onClick={onToggleSidebar}
-            className="hover:bg-gray-100 dark:hover:bg-navy-800"
+            className="hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             <Menu className="w-5 h-5" />
           </Button>
           
           <div>
-            <h2 className="text-lg font-semibold text-navy-900 dark:text-white">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
               Welcome back, {user?.name}
             </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">
+            <p className="text-sm text-slate-500 dark:text-slate-400 capitalize">
               {user?.role.toLowerCase()} Dashboard
             </p>
           </div>
@@ -43,26 +43,26 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
 
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <Sun className="w-4 h-4" />
+            <Sun className="w-4 h-4 text-slate-500" />
             <Switch
               checked={theme === 'dark'}
               onCheckedChange={toggleTheme}
             />
-            <Moon className="w-4 h-4" />
+            <Moon className="w-4 h-4 text-slate-500" />
           </div>
 
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-full shadow-sm"></span>
           </Button>
 
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center shadow-md">
               <User className="w-4 h-4 text-white" />
             </div>
             <div className="hidden md:block">
-              <p className="text-sm font-medium text-navy-900 dark:text-white">{user?.name}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</p>
+              <p className="text-sm font-medium text-slate-900 dark:text-white">{user?.name}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{user?.email}</p>
             </div>
           </div>
 
@@ -70,7 +70,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
             variant="ghost"
             size="icon"
             onClick={logout}
-            className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+            className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200"
           >
             <LogOut className="w-5 h-5" />
           </Button>

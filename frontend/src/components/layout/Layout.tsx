@@ -15,7 +15,7 @@ const Layout: React.FC = () => {
   };
 
   return (
-    <div className="h-screen flex bg-gray-50 dark:bg-navy-800">
+    <div className="h-screen flex bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-900/30">
       <Sidebar 
         isOpen={sidebarOpen} 
         currentPath={location.pathname}

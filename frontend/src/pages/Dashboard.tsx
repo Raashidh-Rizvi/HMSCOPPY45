@@ -1,10 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Users, Calendar, DollarSign, Activity, TrendingUp, TrendingDown } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
+  
   // Mock data for charts
   const monthlyData = [
     { month: 'Jan', patients: 120, revenue: 45000 },
@@ -16,17 +20,17 @@ const Dashboard: React.FC = () => {
   ];
 
   const departmentData = [
-    { name: 'Cardiology', value: 30, color: '#0d9488' },
-    { name: 'Neurology', value: 25, color: '#14b8a6' },
-    { name: 'Orthopedics', value: 20, color: '#2dd4bf' },
-    { name: 'Pediatrics', value: 15, color: '#5eead4' },
-    { name: 'Emergency', value: 10, color: '#99f6e4' },
+    { name: 'Cardiology', value: 30, color: '#3b82f6' },
+    { name: 'Neurology', value: 25, color: '#6366f1' },
+    { name: 'Orthopedics', value: 20, color: '#8b5cf6' },
+    { name: 'Pediatrics', value: 15, color: '#a855f7' },
+    { name: 'Emergency', value: 10, color: '#d946ef' },
   ];
 
   const stats = [
     {
       title: 'Total Patients',
-      value: '1,234',
+      value: '0',
       change: '+12%',
       trend: 'up',
       icon: Users,
@@ -35,7 +39,7 @@ const Dashboard: React.FC = () => {
     },
     {
       title: 'Appointments Today',
-      value: '48',
+      value: '0',
       change: '+8%',
       trend: 'up',
       icon: Calendar,
@@ -44,16 +48,16 @@ const Dashboard: React.FC = () => {
     },
     {
       title: 'Revenue This Month',
-      value: '$67,000',
+      value: '$0',
       change: '+15%',
       trend: 'up',
       icon: DollarSign,
-      color: 'text-teal-600',
-      bgColor: 'bg-teal-50 dark:bg-teal-900/20'
+      color: 'text-indigo-600',
+      bgColor: 'bg-indigo-50 dark:bg-indigo-900/20'
     },
     {
       title: 'Bed Occupancy',
-      value: '85%',
+      value: '0%',
       change: '-3%',
       trend: 'down',
       icon: Activity,
@@ -70,8 +74,23 @@ const Dashboard: React.FC = () => {
         className="flex items-center justify-between"
       >
         <div>
-          <h1 className="text-3xl font-bold text-navy-900 dark:text-white">Dashboard</h1>
-          <p className="text-gray-600 dark:text-gray-400">Hospital overview and key metrics</p>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Dashboard</h1>
+          <p className="text-slate-600 dark:text-slate-400">Hospital overview and key metrics</p>
+        </div>
+        <div className="flex space-x-3">
+          <Button 
+            onClick={() => navigate('/patients')}
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-200"
+          >
+            Add Patient
+          </Button>
+          <Button 
+            onClick={() => navigate('/appointments')}
+            variant="outline"
+            className="border-blue-200 text-blue-600 hover:bg-blue-50 dark:border-blue-800 dark:text-blue-400 dark:hover:bg-blue-900/20"
+          >
+            Schedule Appointment
+          </Button>
         </div>
       </motion.div>
 
@@ -88,14 +107,14 @@ const Dashboard: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="hover:shadow-lg transition-shadow duration-300">
+              <Card className="hover:shadow-xl transition-all duration-300 border-0 shadow-md bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
                         {stat.title}
                       </p>
-                      <p className="text-2xl font-bold text-navy-900 dark:text-white">
+                      <p className="text-2xl font-bold text-slate-900 dark:text-white">
                         {stat.value}
                       </p>
                       <div className="flex items-center mt-2">
@@ -109,7 +128,7 @@ const Dashboard: React.FC = () => {
                         </span>
                       </div>
                     </div>
-                    <div className={`p-3 rounded-full ${stat.bgColor}`}>
+                    <div className={`p-3 rounded-full ${stat.bgColor} shadow-sm`}>
                       <Icon className={`w-6 h-6 ${stat.color}`} />
                     </div>
                   </div>
@@ -127,7 +146,7 @@ const Dashboard: React.FC = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <Card>
+          <Card className="border-0 shadow-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
             <CardHeader>
               <CardTitle>Monthly Patient Volume</CardTitle>
               <CardDescription>Patient visits over the last 6 months</CardDescription>
@@ -139,7 +158,7 @@ const Dashboard: React.FC = () => {
                   <XAxis dataKey="month" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="patients" fill="#14b8a6" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="patients" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -151,7 +170,7 @@ const Dashboard: React.FC = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <Card>
+          <Card className="border-0 shadow-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
             <CardHeader>
               <CardTitle>Revenue Trend</CardTitle>
               <CardDescription>Monthly revenue performance</CardDescription>
@@ -166,9 +185,9 @@ const Dashboard: React.FC = () => {
                   <Line 
                     type="monotone" 
                     dataKey="revenue" 
-                    stroke="#14b8a6" 
+                    stroke="#6366f1" 
                     strokeWidth={3}
-                    dot={{ fill: '#14b8a6', strokeWidth: 2, r: 6 }}
+                    dot={{ fill: '#6366f1', strokeWidth: 2, r: 6 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -184,7 +203,7 @@ const Dashboard: React.FC = () => {
           transition={{ delay: 0.6 }}
           className="lg:col-span-1"
         >
-          <Card>
+          <Card className="border-0 shadow-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
             <CardHeader>
               <CardTitle>Department Distribution</CardTitle>
               <CardDescription>Patient distribution by department</CardDescription>
@@ -218,34 +237,17 @@ const Dashboard: React.FC = () => {
           transition={{ delay: 0.7 }}
           className="lg:col-span-2"
         >
-          <Card>
+          <Card className="border-0 shadow-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
             <CardHeader>
               <CardTitle>Recent Activities</CardTitle>
               <CardDescription>Latest hospital activities and updates</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {[
-                  { time: '2 minutes ago', action: 'New patient registered', user: 'Dr. Smith' },
-                  { time: '15 minutes ago', action: 'Appointment scheduled', user: 'Reception' },
-                  { time: '1 hour ago', action: 'Prescription updated', user: 'Dr. Johnson' },
-                  { time: '2 hours ago', action: 'Vital signs recorded', user: 'Nurse Wilson' },
-                  { time: '3 hours ago', action: 'Inventory restocked', user: 'Pharmacist Brown' },
-                ].map((activity, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.8 + index * 0.1 }}
-                    className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-navy-800"
-                  >
-                    <div>
-                      <p className="font-medium text-navy-900 dark:text-white">{activity.action}</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">by {activity.user}</p>
-                    </div>
-                    <span className="text-xs text-gray-400">{activity.time}</span>
-                  </motion.div>
-                ))}
+                <div className="text-center py-8">
+                  <p className="text-slate-500 dark:text-slate-400">No recent activities</p>
+                  <p className="text-sm text-slate-400 dark:text-slate-500 mt-2">Activities will appear here as you use the system</p>
+                </div>
               </div>
             </CardContent>
           </Card>
