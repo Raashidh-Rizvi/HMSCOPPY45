@@ -90,6 +90,7 @@ const LoginForm: React.FC = () => {
           </Card>
         </motion.div>
       </div>
+  )
   );
 };
 
