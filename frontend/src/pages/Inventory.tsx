@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Search, Package, AlertTriangle, TrendingDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,24 +6,34 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { InventoryItem } from '@/types';
-import api from '@/services/api';
 
 const Inventory: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
 
-  useEffect(() => {
-    fetchInventory();
-  }, []);
-
-  const fetchInventory = async () => {
-    try {
-      const response = await api.get('/inventory');
-      setInventoryItems(response.data);
-    } catch (error) {
-      console.error('Error fetching inventory:', error);
-    }
-  };
+  // Mock data
+  const inventoryItems: InventoryItem[] = [
+    {
+      id: 1,
+      itemName: 'Paracetamol 500mg',
+      quantityAvailable: 150,
+      reorderLevel: 50,
+      lastRestockDate: '2024-12-01'
+    },
+    {
+      id: 2,
+      itemName: 'Surgical Gloves',
+      quantityAvailable: 25,
+      reorderLevel: 100,
+      lastRestockDate: '2024-11-28'
+    },
+    {
+      id: 3,
+      itemName: 'Bandages',
+      quantityAvailable: 200,
+      reorderLevel: 75,
+      lastRestockDate: '2024-12-05'
+    },
+  ];
 
   const lowStockItems = inventoryItems.filter(item => item.quantityAvailable <= item.reorderLevel);
 

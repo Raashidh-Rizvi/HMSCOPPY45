@@ -26,10 +26,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      // Only redirect if not already on login page
-      if (window.location.pathname !== '/login') {
-        window.location.href = '/login';
-      }
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }
@@ -57,8 +54,7 @@ export const authService = {
       localStorage.setItem('user', JSON.stringify(authUser));
       return authUser;
     } catch (error) {
-      console.error('Login error:', error);
-      throw new Error('Invalid username or password');
+      throw new Error('Login failed');
     }
   },
   

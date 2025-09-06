@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
 
     @Autowired
@@ -21,7 +22,7 @@ public class AuthController {
             LoginResponse response = authService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(401).body(new LoginResponse(null, null, "Invalid credentials"));
+            return ResponseEntity.badRequest().body(new LoginResponse(null, null, "Invalid credentials"));
         }
     }
 
