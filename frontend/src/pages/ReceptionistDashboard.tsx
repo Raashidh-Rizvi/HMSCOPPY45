@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { UserPlus, Calendar, CreditCard, Phone, Clock, Users } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,7 @@ import api from '@/services/api';
 
 const ReceptionistDashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const [patients, setPatients] = useState([]);
   const [billings, setBillings] = useState([]);
@@ -80,6 +82,52 @@ const ReceptionistDashboard: React.FC = () => {
           </h1>
           <p className="text-gray-600 dark:text-gray-400">Receptionist Dashboard - Manage appointments and patient registration</p>
         </div>
+      </motion.div>
+
+      {/* Quick Actions */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <Card>
+          <CardHeader>
+            <CardTitle>Quick Actions</CardTitle>
+            <CardDescription>Common reception tasks</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-green-500 hover:bg-green-600"
+                onClick={() => navigate('/patients')}
+              >
+                <UserPlus className="w-6 h-6" />
+                <span className="text-sm">Register Patient</span>
+              </Button>
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-blue-500 hover:bg-blue-600"
+                onClick={() => navigate('/appointments')}
+              >
+                <Calendar className="w-6 h-6" />
+                <span className="text-sm">Book Appointment</span>
+              </Button>
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-orange-500 hover:bg-orange-600"
+                onClick={() => navigate('/billing')}
+              >
+                <CreditCard className="w-6 h-6" />
+                <span className="text-sm">Process Payment</span>
+              </Button>
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-purple-500 hover:bg-purple-600"
+                onClick={() => alert('Call patient feature coming soon!')}
+              >
+                <Phone className="w-6 h-6" />
+                <span className="text-sm">Call Patient</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </motion.div>
 
       {/* Stats Grid */}
@@ -228,39 +276,6 @@ const ReceptionistDashboard: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Quick Actions */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
-      >
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Common reception tasks</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2 bg-green-500 hover:bg-green-600">
-                <UserPlus className="w-6 h-6" />
-                <span className="text-sm">Register Patient</span>
-              </Button>
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2 bg-blue-500 hover:bg-blue-600">
-                <Calendar className="w-6 h-6" />
-                <span className="text-sm">Book Appointment</span>
-              </Button>
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2 bg-orange-500 hover:bg-orange-600">
-                <CreditCard className="w-6 h-6" />
-                <span className="text-sm">Process Payment</span>
-              </Button>
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2 bg-purple-500 hover:bg-purple-600">
-                <Phone className="w-6 h-6" />
-                <span className="text-sm">Call Patient</span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
     </div>
   );
 };

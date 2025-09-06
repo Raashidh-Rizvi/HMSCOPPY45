@@ -86,28 +86,6 @@ const LoginForm: React.FC = () => {
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="absolute right-0 top-0 h-12 w-12"
-                        onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </Button>
-                  </div>
-                </div>
-
-                <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="mt-6"
-                >
-                  <Button
-                      type="submit"
-                      className="w-full h-12 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-medium shadow-lg transition-all duration-200"
-                      disabled={isLoading}
-                  >
-                    {isLoading ? 'Signing in...' : 'Sign In'}
-                  </Button>
-                </motion.div>
-              </form>
-
             </CardContent>
           </Card>
         </motion.div>

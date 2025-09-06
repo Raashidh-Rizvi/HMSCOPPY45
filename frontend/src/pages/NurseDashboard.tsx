@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Heart, Users, Activity, Thermometer, Clock, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,6 +10,7 @@ import api from '@/services/api';
 
 const NurseDashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const navigate = useNavigate();
   const [vitalSigns, setVitalSigns] = useState([]);
   const [patients, setPatients] = useState([]);
@@ -79,6 +81,52 @@ const NurseDashboard: React.FC = () => {
           </h1>
           <p className="text-gray-600 dark:text-gray-400">Nurse Dashboard - Monitor patient care and vital signs</p>
         </div>
+      </motion.div>
+
+      {/* Quick Actions */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <Card>
+          <CardHeader>
+            <CardTitle>Quick Actions</CardTitle>
+            <CardDescription>Common nursing tasks</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-red-500 hover:bg-red-600"
+                onClick={() => navigate('/vitals')}
+              >
+                <Heart className="w-6 h-6" />
+                <span className="text-sm">Record Vitals</span>
+              </Button>
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-blue-500 hover:bg-blue-600"
+                onClick={() => navigate('/patients')}
+              >
+                <Users className="w-6 h-6" />
+                <span className="text-sm">Patient Care</span>
+              </Button>
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-green-500 hover:bg-green-600"
+                onClick={() => navigate('/records')}
+              >
+                <Activity className="w-6 h-6" />
+                <span className="text-sm">Medical Records</span>
+              </Button>
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-purple-500 hover:bg-purple-600"
+                onClick={() => alert('Shift report feature coming soon!')}
+              >
+                <Clock className="w-6 h-6" />
+                <span className="text-sm">Shift Report</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </motion.div>
 
       {/* Quick Actions */}
@@ -250,39 +298,6 @@ const NurseDashboard: React.FC = () => {
                         </p>
                         <span className="text-xs text-gray-500 dark:text-gray-400">
                           {new Date(vital.logDateTime).toLocaleTimeString()}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2 text-sm">
-                        <div>
-                          <span className="text-gray-500 dark:text-gray-400">Temp:</span>
-                          <span className="ml-1 font-medium">{vital.temperature}°F</span>
-                        </div>
-                        <div>
-                          <span className="text-gray-500 dark:text-gray-400">BP:</span>
-                          <span className="ml-1 font-medium">{vital.bloodPressure}</span>
-                        </div>
-                        <div>
-                          <span className="text-gray-500 dark:text-gray-400">HR:</span>
-                          <span className="ml-1 font-medium">{vital.heartRate} bpm</span>
-                        </div>
-                        <div>
-                          <span className="text-gray-500 dark:text-gray-400">RR:</span>
-                          <span className="ml-1 font-medium">{vital.respiratoryRate}/min</span>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))
-                ) : (
-                  <p className="text-gray-500 dark:text-gray-400 text-center py-4">
-                    No vital signs recorded yet
-                  </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
-
     </div>
   );
 };

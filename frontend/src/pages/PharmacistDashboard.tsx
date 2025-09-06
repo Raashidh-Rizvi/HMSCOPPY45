@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Package, Pill, AlertTriangle, TrendingDown, ShoppingCart, Clock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,7 @@ import api from '@/services/api';
 
 const PharmacistDashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [inventory, setInventory] = useState([]);
   const [prescriptions, setPrescriptions] = useState([]);
   const [restockOrders, setRestockOrders] = useState([]);
@@ -84,6 +86,52 @@ const PharmacistDashboard: React.FC = () => {
           </h1>
           <p className="text-gray-600 dark:text-gray-400">Pharmacist Dashboard - Manage inventory and prescriptions</p>
         </div>
+      </motion.div>
+
+      {/* Quick Actions */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <Card>
+          <CardHeader>
+            <CardTitle>Quick Actions</CardTitle>
+            <CardDescription>Common pharmacy tasks</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-blue-500 hover:bg-blue-600"
+                onClick={() => navigate('/inventory')}
+              >
+                <Package className="w-6 h-6" />
+                <span className="text-sm">Check Inventory</span>
+              </Button>
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-green-500 hover:bg-green-600"
+                onClick={() => navigate('/prescriptions')}
+              >
+                <Pill className="w-6 h-6" />
+                <span className="text-sm">Dispense Medication</span>
+              </Button>
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-orange-500 hover:bg-orange-600"
+                onClick={() => alert('Restock order feature coming soon!')}
+              >
+                <ShoppingCart className="w-6 h-6" />
+                <span className="text-sm">Restock Order</span>
+              </Button>
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-purple-500 hover:bg-purple-600"
+                onClick={() => alert('Expiry check feature coming soon!')}
+              >
+                <Clock className="w-6 h-6" />
+                <span className="text-sm">Expiry Check</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </motion.div>
 
       {/* Stats Grid */}
@@ -267,39 +315,6 @@ const PharmacistDashboard: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Quick Actions */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8 }}
-      >
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Common pharmacy tasks</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2 bg-blue-500 hover:bg-blue-600">
-                <Package className="w-6 h-6" />
-                <span className="text-sm">Check Inventory</span>
-              </Button>
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2 bg-green-500 hover:bg-green-600">
-                <Pill className="w-6 h-6" />
-                <span className="text-sm">Dispense Medication</span>
-              </Button>
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2 bg-orange-500 hover:bg-orange-600">
-                <ShoppingCart className="w-6 h-6" />
-                <span className="text-sm">Restock Order</span>
-              </Button>
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2 bg-purple-500 hover:bg-purple-600">
-                <Clock className="w-6 h-6" />
-                <span className="text-sm">Expiry Check</span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
     </div>
   );
 };
