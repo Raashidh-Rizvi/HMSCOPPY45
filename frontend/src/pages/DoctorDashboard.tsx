@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Users, Calendar, FileText, Pill, Clock, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -9,6 +10,7 @@ import api from '@/services/api';
 
 const DoctorDashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const [patients, setPatients] = useState([]);
   const [prescriptions, setPrescriptions] = useState([]);
@@ -81,6 +83,52 @@ const DoctorDashboard: React.FC = () => {
           </h1>
           <p className="text-gray-600 dark:text-gray-400">Doctor Dashboard - Manage your patients and appointments</p>
         </div>
+      </motion.div>
+
+      {/* Quick Actions */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <Card>
+          <CardHeader>
+            <CardTitle>Quick Actions</CardTitle>
+            <CardDescription>Common doctor tasks</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-teal-500 hover:bg-teal-600"
+                onClick={() => navigate('/records')}
+              >
+                <FileText className="w-6 h-6" />
+                <span className="text-sm">View Records</span>
+              </Button>
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-blue-500 hover:bg-blue-600"
+                onClick={() => navigate('/prescriptions')}
+              >
+                <Pill className="w-6 h-6" />
+                <span className="text-sm">Prescribe</span>
+              </Button>
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-green-500 hover:bg-green-600"
+                onClick={() => navigate('/appointments')}
+              >
+                <Calendar className="w-6 h-6" />
+                <span className="text-sm">Schedule</span>
+              </Button>
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-purple-500 hover:bg-purple-600"
+                onClick={() => navigate('/patients')}
+              >
+                <Users className="w-6 h-6" />
+                <span className="text-sm">Patients</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </motion.div>
 
       {/* Stats Grid */}
@@ -225,39 +273,6 @@ const DoctorDashboard: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Quick Actions */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
-      >
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Common tasks and shortcuts</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2 bg-teal-500 hover:bg-teal-600">
-                <FileText className="w-6 h-6" />
-                <span className="text-sm">View Records</span>
-              </Button>
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2 bg-blue-500 hover:bg-blue-600">
-                <Pill className="w-6 h-6" />
-                <span className="text-sm">Prescribe</span>
-              </Button>
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2 bg-green-500 hover:bg-green-600">
-                <Calendar className="w-6 h-6" />
-                <span className="text-sm">Schedule</span>
-              </Button>
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2 bg-purple-500 hover:bg-purple-600">
-                <TrendingUp className="w-6 h-6" />
-                <span className="text-sm">Reports</span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
     </div>
   );
 };

@@ -108,28 +108,6 @@ const LoginForm: React.FC = () => {
                 </motion.div>
               </form>
 
-              <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-navy-800/50 -mx-6 -mb-6 px-6 pb-6 rounded-b-lg">
-                <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-                  <p className="mb-2">Demo Credentials:</p>
-                  <div className="grid grid-cols-1 gap-2 text-xs space-y-1">
-                    <div className="p-2 bg-white dark:bg-navy-700 rounded border">
-                      <strong>Admin:</strong> admin / admin
-                    </div>
-                    <div className="p-2 bg-white dark:bg-navy-700 rounded border">
-                      <strong>Doctor:</strong> doctor / doctor
-                    </div>
-                    <div className="p-2 bg-white dark:bg-navy-700 rounded border">
-                      <strong>Nurse:</strong> nurse / nurse
-                    </div>
-                    <div className="p-2 bg-white dark:bg-navy-700 rounded border">
-                      <strong>Receptionist:</strong> reception / reception
-                    </div>
-                    <div className="p-2 bg-white dark:bg-navy-700 rounded border">
-                      <strong>Pharmacist:</strong> pharmacist / pharmacist
-                    </div>
-                  </div>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </motion.div>

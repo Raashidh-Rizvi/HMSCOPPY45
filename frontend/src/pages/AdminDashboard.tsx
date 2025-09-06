@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Users, BarChart3, Settings, Shield, TrendingUp, Activity, DollarSign, Calendar } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,6 +10,7 @@ import api from '@/services/api';
 
 const AdminDashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
@@ -323,28 +325,40 @@ const AdminDashboard: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8 }}
+        transition={{ delay: 0.2 }}
       >
         <Card>
           <CardHeader>
-            <CardTitle>Administrative Actions</CardTitle>
-            <CardDescription>System management and oversight tools</CardDescription>
+            <CardTitle>Quick Actions</CardTitle>
+            <CardDescription>Administrative shortcuts and tools</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2 bg-blue-500 hover:bg-blue-600">
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-blue-500 hover:bg-blue-600"
+                onClick={() => navigate('/staff')}
+              >
                 <Users className="w-6 h-6" />
                 <span className="text-sm">Manage Staff</span>
               </Button>
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2 bg-green-500 hover:bg-green-600">
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-green-500 hover:bg-green-600"
+                onClick={() => navigate('/reports')}
+              >
                 <BarChart3 className="w-6 h-6" />
                 <span className="text-sm">View Reports</span>
               </Button>
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2 bg-purple-500 hover:bg-purple-600">
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-purple-500 hover:bg-purple-600"
+                onClick={() => alert('System configuration coming soon!')}
+              >
                 <Settings className="w-6 h-6" />
                 <span className="text-sm">System Config</span>
               </Button>
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2 bg-orange-500 hover:bg-orange-600">
+              <Button 
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-orange-500 hover:bg-orange-600"
+                onClick={() => alert('Security settings coming soon!')}
+              >
                 <Shield className="w-6 h-6" />
                 <span className="text-sm">Security</span>
               </Button>
@@ -352,6 +366,7 @@ const AdminDashboard: React.FC = () => {
           </CardContent>
         </Card>
       </motion.div>
+
     </div>
   );
 };
