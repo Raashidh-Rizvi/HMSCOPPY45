@@ -37,7 +37,10 @@ const DoctorDashboard: React.FC = () => {
     const stats = [
         {
             title: 'Today\'s Appointments',
-            value: '8',
+            value: appointments.filter((apt: any) => {
+                const today = new Date().toDateString();
+                return new Date(apt.appointmentDateTime).toDateString() === today;
+            }).length.toString(),
             change: '+2 from yesterday',
             icon: Calendar,
             color: 'text-blue-600',
@@ -45,7 +48,7 @@ const DoctorDashboard: React.FC = () => {
         },
         {
             title: 'Total Patients',
-            value: '156',
+            value: patients.length.toString(),
             change: '+12 this month',
             icon: Users,
             color: 'text-green-600',
@@ -53,7 +56,7 @@ const DoctorDashboard: React.FC = () => {
         },
         {
             title: 'Prescriptions Written',
-            value: '24',
+            value: prescriptions.length.toString(),
             change: '+5 today',
             icon: Pill,
             color: 'text-purple-600',
@@ -82,52 +85,6 @@ const DoctorDashboard: React.FC = () => {
                     </h1>
                     <p className="text-gray-600 dark:text-gray-400">Doctor Dashboard - Manage your patients and appointments</p>
                 </div>
-            </motion.div>
-
-            {/* Quick Actions */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-            >
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Quick Actions</CardTitle>
-                        <CardDescription>Common doctor tasks</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <Button
-                                className="h-20 flex flex-col items-center justify-center space-y-2 bg-teal-500 hover:bg-teal-600"
-                                onClick={() => navigate('/records')}
-                            >
-                                <FileText className="w-6 h-6" />
-                                <span className="text-sm">View Records</span>
-                            </Button>
-                            <Button
-                                className="h-20 flex flex-col items-center justify-center space-y-2 bg-blue-500 hover:bg-blue-600"
-                                onClick={() => navigate('/prescriptions')}
-                            >
-                                <Pill className="w-6 h-6" />
-                                <span className="text-sm">Prescribe</span>
-                            </Button>
-                            <Button
-                                className="h-20 flex flex-col items-center justify-center space-y-2 bg-green-500 hover:bg-green-600"
-                                onClick={() => navigate('/appointments')}
-                            >
-                                <Calendar className="w-6 h-6" />
-                                <span className="text-sm">Schedule</span>
-                            </Button>
-                            <Button
-                                className="h-20 flex flex-col items-center justify-center space-y-2 bg-purple-500 hover:bg-purple-600"
-                                onClick={() => navigate('/patients')}
-                            >
-                                <Users className="w-6 h-6" />
-                                <span className="text-sm">Patients</span>
-                            </Button>
-                        </div>
-                    </CardContent>
-                </Card>
             </motion.div>
 
             {/* Quick Actions */}
@@ -253,8 +210,8 @@ const DoctorDashboard: React.FC = () => {
                                                     ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400'
                                                     : 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
                                             }`}>
-                        {appointment.status}
-                      </span>
+                                                {appointment.status}
+                                            </span>
                                         </motion.div>
                                     ))
                                 ) : (
@@ -285,9 +242,96 @@ const DoctorDashboard: React.FC = () => {
                             <div className="space-y-4">
                                 {patients.length > 0 ? (
                                     patients.map((patient: any, index) => (
-                                    </div>
-                                    );
-                                };
+                                        <motion.div
+                                            key={patient.id}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: 0.6 + index * 0.1 }}
+                                            className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-navy-800"
+                                        >
+                                            <div>
+                                                <p className="font-medium text-navy-900 dark:text-white">
+                                                    {patient.firstName} {patient.lastName}
+                                                </p>
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    {patient.email}
+                                                </p>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    {new Date(patient.registrationDate).toLocaleDateString()}
+                                                </p>
+                                                <Button size="sm" variant="outline" className="mt-1">
+                                                    View
+                                                </Button>
+                                            </div>
+                                        </motion.div>
+                                    ))
+                                ) : (
+                                    <p className="text-gray-500 dark:text-gray-400 text-center py-4">
+                                        No recent patients
+                                    </p>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </motion.div>
+            </div>
 
+            {/* Recent Prescriptions */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+            >
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center">
+                            <Pill className="w-5 h-5 mr-2" />
+                            Recent Prescriptions
+                        </CardTitle>
+                        <CardDescription>Recently prescribed medications</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-4">
+                            {prescriptions.length > 0 ? (
+                                prescriptions.map((prescription: any, index) => (
+                                    <motion.div
+                                        key={prescription.id}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.7 + index * 0.1 }}
+                                        className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-navy-800"
+                                    >
+                                        <div>
+                                            <p className="font-medium text-navy-900 dark:text-white">
+                                                {prescription.medicationName}
+                                            </p>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                Patient: {prescription.patient?.firstName} {prescription.patient?.lastName}
+                                            </p>
+                                            <p className="text-xs text-gray-400">
+                                                {prescription.dosage} - {prescription.frequency}
+                                            </p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                {new Date(prescription.startDate).toLocaleDateString()}
+                                            </p>
+                                        </div>
+                                    </motion.div>
+                                ))
+                            ) : (
+                                <p className="text-gray-500 dark:text-gray-400 text-center py-4">
+                                    No recent prescriptions
+                                </p>
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
+            </motion.div>
+        </div>
+    );
+};
 
-                                export default DoctorDashboard;
+export default DoctorDashboard;
