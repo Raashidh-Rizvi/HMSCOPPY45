@@ -1,12 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import {AuthProvider, useAuth} from '@/context/AuthContext';
+import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import ProtectedRoute from '@/components/common/ProtectedRoute';
 import Layout from '@/components/layout/Layout';
 import LoginForm from '@/components/auth/LoginForm';
-import Dashboard from '@/pages/Dashboard';
 import Patients from '@/pages/Patients';
 import Appointments from '@/pages/Appointments';
 import Inventory from '@/pages/Inventory';
@@ -24,6 +23,17 @@ import Staff from '@/pages/Staff';
 
 const queryClient = new QueryClient();
 
+// Component to handle initial redirect
+const InitialRedirect: React.FC = () => {
+  const { user } = useAuth();
+  
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  return <Navigate to="/dashboard" replace />;
+};
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -32,15 +42,15 @@ function App() {
           <Router>
             <Routes>
               <Route path="/login" element={<LoginForm />} />
+              <Route path="/" element={<InitialRedirect />} />
               <Route
-                path="/"
+                path="/app"
                 element={
                   <ProtectedRoute>
                     <Layout />
                   </ProtectedRoute>
                 }
               >
-                <Route index element={<Navigate to="/dashboard" replace />} />
                 <Route path="dashboard" element={<RoleDashboard />} />
                 <Route path="patients" element={<Patients />} />
                 <Route path="appointments" element={<Appointments />} />
@@ -80,6 +90,16 @@ function App() {
                   </ProtectedRoute>
                 } />
               </Route>
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Layout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<RoleDashboard />} />
+              </Route>
               <Route path="/unauthorized" element={
                 <div className="min-h-screen flex items-center justify-center">
                   <div className="text-center">
@@ -112,7 +132,7 @@ const RoleDashboard: React.FC = () => {
     case 'PHARMACIST':
       return <PharmacistDashboard />;
     default:
-      return <Dashboard />;
+      return <AdminDashboard />;
   }
 };
 

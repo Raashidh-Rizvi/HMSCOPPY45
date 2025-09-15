@@ -34,45 +34,44 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, currentPath, onNavigate }) =>
       case 'ADMINISTRATOR':
         return [
           ...baseItems,
-          { icon: Users, label: 'Staff', path: '/staff' },
-          { icon: Users, label: 'Patients', path: '/patients' },
-          { icon: Calendar, label: 'Appointments', path: '/appointments' },
-          { icon: FileText, label: 'Records', path: '/records' },
-          { icon: Pill, label: 'Prescriptions', path: '/prescriptions' },
-          { icon: CreditCard, label: 'Billing', path: '/billing' },
-          { icon: Package, label: 'Inventory', path: '/inventory' },
-          { icon: Heart, label: 'Vital Signs', path: '/vitals' },
-          { icon: BarChart3, label: 'Reports', path: '/reports' },
-          { icon: Settings, label: 'Settings', path: '/settings' },
+          { icon: Users, label: 'Staff', path: '/app/staff' },
+          { icon: Users, label: 'Patients', path: '/app/patients' },
+          { icon: Calendar, label: 'Appointments', path: '/app/appointments' },
+          { icon: FileText, label: 'Records', path: '/app/records' },
+          { icon: Pill, label: 'Prescriptions', path: '/app/prescriptions' },
+          { icon: CreditCard, label: 'Billing', path: '/app/billing' },
+          { icon: Package, label: 'Inventory', path: '/app/inventory' },
+          { icon: Heart, label: 'Vital Signs', path: '/app/vitals' },
+          { icon: BarChart3, label: 'Reports', path: '/app/reports' },
         ];
       case 'RECEPTIONIST':
         return [
           ...baseItems,
-          { icon: UserPlus, label: 'Patient Registration', path: '/patients' },
-          { icon: Calendar, label: 'Appointments', path: '/appointments' },
-          { icon: CreditCard, label: 'Billing', path: '/billing' },
+          { icon: UserPlus, label: 'Patient Registration', path: '/app/patients' },
+          { icon: Calendar, label: 'Appointments', path: '/app/appointments' },
+          { icon: CreditCard, label: 'Billing', path: '/app/billing' },
         ];
       case 'DOCTOR':
         return [
           ...baseItems,
-          { icon: Users, label: 'Patients', path: '/patients' },
-          { icon: FileText, label: 'Records', path: '/records' },
-          { icon: Pill, label: 'Prescriptions', path: '/prescriptions' },
-          { icon: Calendar, label: 'Appointments', path: '/appointments' },
+          { icon: Users, label: 'Patients', path: '/app/patients' },
+          { icon: FileText, label: 'Records', path: '/app/records' },
+          { icon: Pill, label: 'Prescriptions', path: '/app/prescriptions' },
+          { icon: Calendar, label: 'Appointments', path: '/app/appointments' },
         ];
       case 'NURSE':
         return [
           ...baseItems,
-          { icon: Users, label: 'Patients', path: '/patients' },
-          { icon: FileText, label: 'Records', path: '/records' },
-          { icon: Heart, label: 'Vital Signs', path: '/vitals' },
-          { icon: Calendar, label: 'Appointments', path: '/appointments' },
+          { icon: Users, label: 'Patients', path: '/app/patients' },
+          { icon: FileText, label: 'Records', path: '/app/records' },
+          { icon: Heart, label: 'Vital Signs', path: '/app/vitals' },
+          { icon: Calendar, label: 'Appointments', path: '/app/appointments' },
         ];
       case 'PHARMACIST':
         return [
           ...baseItems,
-          { icon: Package, label: 'Inventory', path: '/inventory' },
-          { icon: Pill, label: 'Prescriptions', path: '/prescriptions' },
+          { icon: Package, label: 'Inventory', path: '/app/inventory' },
+          { icon: Pill, label: 'Prescriptions', path: '/app/prescriptions' },
         ];
       default:
         return baseItems;
