@@ -335,32 +335,32 @@ const AdminDashboard: React.FC = () => {
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Button
-                  className="h-20 flex flex-col items-center justify-center space-y-2 bg-blue-500 hover:bg-blue-600"
-                  onClick={() => navigate('/staff')}
+                  className="h-20 flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                  onClick={() => navigate('/app/staff')}
               >
                 <Users className="w-6 h-6" />
                 <span className="text-sm">Manage Staff</span>
               </Button>
               <Button
-                  className="h-20 flex flex-col items-center justify-center space-y-2 bg-green-500 hover:bg-green-600"
-                  onClick={() => navigate('/reports')}
+                  className="h-20 flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                  onClick={() => navigate('/app/reports')}
               >
                 <BarChart3 className="w-6 h-6" />
                 <span className="text-sm">View Reports</span>
               </Button>
               <Button
-                  className="h-20 flex flex-col items-center justify-center space-y-2 bg-purple-500 hover:bg-purple-600"
-                  onClick={() => alert('System configuration coming soon!')}
+                  className="h-20 flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
+                  onClick={() => navigate('/app/patients')}
               >
                 <Settings className="w-6 h-6" />
-                <span className="text-sm">System Config</span>
+                <span className="text-sm">Patient Management</span>
               </Button>
               <Button
-                  className="h-20 flex flex-col items-center justify-center space-y-2 bg-orange-500 hover:bg-orange-600"
-                  onClick={() => alert('Security settings coming soon!')}
+                  className="h-20 flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700"
+                  onClick={() => navigate('/app/billing')}
               >
                 <Shield className="w-6 h-6" />
-                <span className="text-sm">Security</span>
+                <span className="text-sm">Billing</span>
               </Button>
             </div>
           </CardContent>

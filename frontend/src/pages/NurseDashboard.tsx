@@ -95,32 +95,32 @@ const NurseDashboard: React.FC = () => {
                     <CardContent>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <Button
-                                className="h-20 flex flex-col items-center justify-center space-y-2 bg-red-500 hover:bg-red-600"
-                                onClick={() => navigate('/vitals')}
+                                className="h-20 flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700"
+                                onClick={() => navigate('/app/vitals')}
                             >
                                 <Heart className="w-6 h-6" />
                                 <span className="text-sm">Record Vitals</span>
                             </Button>
                             <Button
-                                className="h-20 flex flex-col items-center justify-center space-y-2 bg-blue-500 hover:bg-blue-600"
-                                onClick={() => navigate('/patients')}
+                                className="h-20 flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                                onClick={() => navigate('/app/patients')}
                             >
                                 <Users className="w-6 h-6" />
                                 <span className="text-sm">Patient Care</span>
                             </Button>
                             <Button
-                                className="h-20 flex flex-col items-center justify-center space-y-2 bg-green-500 hover:bg-green-600"
-                                onClick={() => navigate('/records')}
+                                className="h-20 flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                                onClick={() => navigate('/app/records')}
                             >
                                 <Activity className="w-6 h-6" />
                                 <span className="text-sm">Medical Records</span>
                             </Button>
                             <Button
-                                className="h-20 flex flex-col items-center justify-center space-y-2 bg-purple-500 hover:bg-purple-600"
-                                onClick={() => alert('Shift report feature coming soon!')}
+                                className="h-20 flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
+                                onClick={() => navigate('/app/reports')}
                             >
                                 <Clock className="w-6 h-6" />
-                                <span className="text-sm">Shift Report</span>
+                                <span className="text-sm">Reports</span>
                             </Button>
                         </div>
                     </CardContent>
