@@ -1,13 +1,20 @@
 package com.hmsv1.dto;
 
-import com.hmsv1.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@AllArgsConstructor
+@Setter
+@Getter
 public class LoginResponse {
+    // getters and setters
     private String token;
-    private User user;
+    private UserDto user;
     private String message;
+
+    public LoginResponse(String token, UserDto user, String message) {
+        this.token = token;
+        this.user = user;
+        this.message = message;
+    }
+
 }

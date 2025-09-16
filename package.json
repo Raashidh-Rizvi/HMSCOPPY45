@@ -12,5 +12,9 @@
   "dependencies": {
     "@vitejs/plugin-react": "^5.0.2",
     "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@tanstack/react-query": "^5.89.0",
+    "react-router-dom": "^7.9.1"
   }
 }
