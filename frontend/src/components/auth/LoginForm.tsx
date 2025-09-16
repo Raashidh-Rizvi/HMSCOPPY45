@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Stethoscope, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Stethoscope, Eye, EyeOff, AlertCircle, Mail, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,7 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const LoginForm: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +23,7 @@ const LoginForm: React.FC = () => {
     setError('');
 
     try {
-      const user = await login(username, password);
+      const user = await login(email, password);
       
       // Redirect based on user role
       switch (user.role) {
@@ -52,22 +52,8 @@ const LoginForm: React.FC = () => {
     }
   };
 
-  // Demo credentials for easy testing
-  const demoCredentials = [
-    { role: 'Administrator', username: 'admin', password: 'admin123' },
-    { role: 'Doctor', username: 'doctor', password: 'doctor123' },
-    { role: 'Nurse', username: 'nurse', password: 'nurse123' },
-    { role: 'Receptionist', username: 'reception', password: 'reception123' },
-    { role: 'Pharmacist', username: 'pharmacist', password: 'pharmacist123' },
-  ];
-
-  const fillDemoCredentials = (username: string, password: string) => {
-    setUsername(username);
-    setPassword(password);
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-900 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-900/30 p-4">
       <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         {/* Left side - Branding */}
         <motion.div
@@ -121,7 +107,7 @@ const LoginForm: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="w-full max-w-md mx-auto"
         >
-          <Card className="shadow-2xl border-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+          <Card className="border-0 shadow-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
             <CardHeader className="text-center pb-8">
               <div className="lg:hidden">
                 <motion.div
@@ -135,7 +121,7 @@ const LoginForm: React.FC = () => {
               </div>
               
               <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white">
-                Welcome Back
+                Staff Login
               </CardTitle>
               <CardDescription className="text-slate-600 dark:text-slate-400">
                 Sign in to access your dashboard
@@ -156,22 +142,26 @@ const LoginForm: React.FC = () => {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="username" className="text-slate-700 dark:text-slate-300">Username</Label>
-                  <Input
-                    id="username"
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Enter your username"
-                    required
-                    className="h-12 border-slate-300 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400"
-                    disabled={isLoading}
-                  />
+                  <Label htmlFor="email" className="text-slate-700 dark:text-slate-300">Email Address</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email address"
+                      required
+                      className="h-12 pl-10 border-slate-300 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400"
+                      disabled={isLoading}
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-slate-700 dark:text-slate-300">Password</Label>
                   <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
                     <Input
                       id="password"
                       type={showPassword ? 'text' : 'password'}
@@ -179,7 +169,7 @@ const LoginForm: React.FC = () => {
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Enter your password"
                       required
-                      className="h-12 pr-12 border-slate-300 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400"
+                      className="h-12 pl-10 pr-12 border-slate-300 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400"
                       disabled={isLoading}
                     />
                     <Button
@@ -215,31 +205,10 @@ const LoginForm: React.FC = () => {
                 </Button>
               </form>
 
-              {/* Demo Credentials */}
-              <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
-                <p className="text-sm text-slate-600 dark:text-slate-400 mb-3 text-center">
-                  Demo Credentials (Click to fill):
+              <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
+                <p className="text-xs text-slate-500 dark:text-slate-400 text-center">
+                  Contact your administrator if you need help with your account
                 </p>
-                <div className="grid grid-cols-1 gap-2">
-                  {demoCredentials.map((cred, index) => (
-                    <Button
-                      key={index}
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="justify-start text-xs h-8 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700"
-                      onClick={() => fillDemoCredentials(cred.username, cred.password)}
-                      disabled={isLoading}
-                    >
-                      <span className="font-medium text-blue-600 dark:text-blue-400 w-20 text-left">
-                        {cred.role}:
-                      </span>
-                      <span className="text-slate-600 dark:text-slate-400">
-                        {cred.username} / {cred.password}
-                      </span>
-                    </Button>
-                  ))}
-                </div>
               </div>
             </CardContent>
           </Card>

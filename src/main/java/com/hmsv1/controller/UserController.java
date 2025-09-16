@@ -38,7 +38,10 @@ public class UserController {
         if (existingUser.isPresent()) {
             User user = existingUser.get();
             user.setUsername(userDetails.getUsername());
-            user.setPassword(userDetails.getPassword());
+            // Only update password if it's provided
+            if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
+                user.setPassword(userDetails.getPassword());
+            }
             user.setRole(userDetails.getRole());
             user.setName(userDetails.getName());
             user.setEmail(userDetails.getEmail());

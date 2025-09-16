@@ -18,18 +18,18 @@ public class AuthService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    public LoginResponse authenticate(String username, String password) {
-        Optional<User> userOpt = userRepository.findByUsername(username);
+
+    public LoginResponse authenticate(String email, String password) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
         
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            // Use BCrypt password verification
             if (passwordEncoder.matches(password, user.getPassword())) {
                 String token = UUID.randomUUID().toString();
                 return new LoginResponse(token, user, "Login successful");
             }
         }
         
-        throw new RuntimeException("Invalid credentials");
+        throw new RuntimeException("Invalid email or password");
     }
 }

@@ -36,9 +36,9 @@ export default api;
 
 // Auth service
 export const authService = {
-  login: async (username: string, password: string): Promise<AuthUser> => {
+  login: async (email: string, password: string): Promise<AuthUser> => {
     try {
-      const response = await api.post('/auth/login', { username, password });
+      const response = await api.post('/auth/login', { email, password });
       const { token, user } = response.data;
       
       const authUser: AuthUser = {
@@ -53,8 +53,8 @@ export const authService = {
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(authUser));
       return authUser;
-    } catch (error) {
-      throw new Error('Login failed');
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Login failed');
     }
   },
   

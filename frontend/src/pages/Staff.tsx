@@ -52,18 +52,29 @@ const Staff: React.FC = () => {
     const formData = new FormData(e.target as HTMLFormElement);
     
     const staffData = {
-      username: formData.get('username') as string,
-      password: formData.get('password') as string,
+      username: formData.get('email') as string, // Use email as username
       role: formData.get('role') as Staff['role'],
       name: formData.get('name') as string,
       email: formData.get('email') as string,
       phone: formData.get('phone') as string,
     };
 
+    // Only include password if it's provided
+    const password = formData.get('password') as string;
+    if (password && password.trim() !== '') {
+      (staffData as any).password = password;
+    }
+
     try {
       if (selectedStaff) {
         await api.put(`/users/${selectedStaff.id}`, staffData);
       } else {
+        // For new staff, password is required
+        if (!password || password.trim() === '') {
+          alert('Password is required for new staff members');
+          return;
+        }
+        (staffData as any).password = password;
         await api.post('/users', staffData);
       }
       
@@ -71,6 +82,7 @@ const Staff: React.FC = () => {
       fetchData();
     } catch (error) {
       console.error('Error saving staff member:', error);
+      alert('Error saving staff member. Please try again.');
     }
   };
 
@@ -195,10 +207,10 @@ const Staff: React.FC = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Administrators</p>
-                  <p className="text-2xl font-bold text-red-600">{roleDistribution.ADMINISTRATOR || 0}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Pharmacists</p>
+                  <p className="text-2xl font-bold text-purple-600">{roleDistribution.PHARMACIST || 0}</p>
                 </div>
-                <Shield className="w-8 h-8 text-red-600" />
+                <UserCheck className="w-8 h-8 text-purple-600" />
               </div>
             </CardContent>
           </Card>
@@ -295,45 +307,6 @@ const Staff: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <Input
-                name="username"
-                defaultValue={selectedStaff?.username}
-                placeholder="Enter username"
-                required
-              />
-            </div>
-
-            {!selectedStaff && (
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  name="password"
-                  type="password"
-                  placeholder="Enter password"
-                  required
-                />
-              </div>
-            )}
-
-            <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
-              <select
-                name="role"
-                defaultValue={selectedStaff?.role}
-                className="w-full p-2 border rounded-md"
-                required
-              >
-                <option value="">Select Role</option>
-                <option value="ADMINISTRATOR">Administrator</option>
-                <option value="DOCTOR">Doctor</option>
-                <option value="NURSE">Nurse</option>
-                <option value="RECEPTIONIST">Receptionist</option>
-                <option value="PHARMACIST">Pharmacist</option>
-              </select>
-            </div>
-
-            <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 name="email"
@@ -345,11 +318,38 @@ const Staff: React.FC = () => {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="role">Role</Label>
+              <select
+                name="role"
+                defaultValue={selectedStaff?.role}
+                className="w-full p-2 border rounded-md"
+                required
+              >
+                <option value="">Select Role</option>
+                <option value="DOCTOR">Doctor</option>
+                <option value="NURSE">Nurse</option>
+                <option value="RECEPTIONIST">Receptionist</option>
+                <option value="PHARMACIST">Pharmacist</option>
+              </select>
+            </div>
+
+
+            <div className="space-y-2">
               <Label htmlFor="phone">Phone</Label>
               <Input
                 name="phone"
                 defaultValue={selectedStaff?.phone}
                 placeholder="Enter phone number"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                name="password"
+                type="password"
+                placeholder={selectedStaff ? "Leave blank to keep current password" : "Enter password"}
+                required={!selectedStaff}
               />
             </div>
 
