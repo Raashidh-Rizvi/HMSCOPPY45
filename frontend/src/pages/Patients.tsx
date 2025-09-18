@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Search, Edit, Trash2, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,14 +7,38 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Patient } from '@/types';
+import api from '@/services/api';
+
+interface Patient {
+  id: number;
+  firstName: string;
+  lastName: string;
+  dob: string;
+  gender: string;
+  address: string;
+  phone: string;
+  email: string;
+  registrationDate: string;
+}
 
 const Patients: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [patients, setPatients] = useState<Patient[]>([]);
 
-  const patients: Patient[] = [];
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await api.get('/patients');
+      setPatients(response.data);
+    } catch (error) {
+      console.error('Error fetching patients:', error);
+    }
+  };
 
   const filteredPatients = patients.filter(patient =>
     `${patient.firstName} ${patient.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -33,9 +57,44 @@ const Patients: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement patient creation/update
-    setIsDialogOpen(false);
+    const formData = new FormData(e.target as HTMLFormElement);
+    
+    const patientData = {
+      firstName: formData.get('firstName') as string,
+      lastName: formData.get('lastName') as string,
+      dob: formData.get('dob') as string,
+      gender: formData.get('gender') as string,
+      address: formData.get('address') as string,
+      phone: formData.get('phone') as string,
+      email: formData.get('email') as string,
+      registrationDate: selectedPatient?.registrationDate || new Date().toISOString().split('T')[0],
+    };
+
+    try {
+      if (selectedPatient) {
+        await api.put(`/patients/${selectedPatient.id}`, patientData);
+      } else {
+        await api.post('/patients', patientData);
+      }
+      
+      setIsDialogOpen(false);
+      fetchData();
+    } catch (error) {
+      console.error('Error saving patient:', error);
+    }
   };
+
+  const handleDelete = async (id: number) => {
+    if (window.confirm('Are you sure you want to delete this patient?')) {
+      try {
+        await api.delete(`/patients/${id}`);
+        fetchData();
+      } catch (error) {
+        console.error('Error deleting patient:', error);
+      }
+    }
+  };
+
   return (
     <div className="space-y-6">
       <motion.div
@@ -107,7 +166,12 @@ const Patients: React.FC = () => {
                         <Button variant="ghost" size="icon" onClick={() => handleEdit(patient)}>
                           <Edit className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700">
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="text-red-500 hover:text-red-700"
+                          onClick={() => handleDelete(patient.id)}
+                        >
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
@@ -149,6 +213,7 @@ const Patients: React.FC = () => {
                 <Label htmlFor="firstName">First Name</Label>
                 <Input
                   id="firstName"
+                  name="firstName"
                   defaultValue={selectedPatient?.firstName}
                   placeholder="Enter first name"
                   className="border-slate-300 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400"
@@ -159,6 +224,7 @@ const Patients: React.FC = () => {
                 <Label htmlFor="lastName">Last Name</Label>
                 <Input
                   id="lastName"
+                  name="lastName"
                   defaultValue={selectedPatient?.lastName}
                   placeholder="Enter last name"
                   className="border-slate-300 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400"
@@ -172,6 +238,7 @@ const Patients: React.FC = () => {
                 <Label htmlFor="dob">Date of Birth</Label>
                 <Input
                   id="dob"
+                  name="dob"
                   type="date"
                   defaultValue={selectedPatient?.dob}
                   className="border-slate-300 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400"
@@ -198,6 +265,7 @@ const Patients: React.FC = () => {
               <Label htmlFor="address">Address</Label>
               <Input
                 id="address"
+                name="address"
                 defaultValue={selectedPatient?.address}
                 placeholder="Enter address"
                 className="border-slate-300 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400"
@@ -210,6 +278,7 @@ const Patients: React.FC = () => {
                 <Label htmlFor="phone">Phone</Label>
                 <Input
                   id="phone"
+                  name="phone"
                   defaultValue={selectedPatient?.phone}
                   placeholder="Enter phone number"
                   className="border-slate-300 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400"
@@ -220,6 +289,7 @@ const Patients: React.FC = () => {
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   defaultValue={selectedPatient?.email}
                   placeholder="Enter email"
