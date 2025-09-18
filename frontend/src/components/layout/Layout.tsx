@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import Footer from './Footer';
+import MessagingSystem from '@/components/messaging/MessagingSystem';
+import AnnouncementSystem from '@/components/announcements/AnnouncementSystem';
 import { useNavigate } from 'react-router-dom';
 
 const Layout: React.FC = () => {
@@ -36,6 +38,10 @@ const Layout: React.FC = () => {
         </motion.main>
         
         <Footer />
+        
+        {/* Real-time Features */}
+        <MessagingSystem />
+        <AnnouncementSystem />
       </div>
     </div>
   );

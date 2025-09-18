@@ -9,6 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 import { usePermissions } from '@/context/PermissionsContext';
 
 import api from '@/services/api';
@@ -22,7 +23,8 @@ const AdminDashboard: React.FC = () => {
   const [billings, setBillings] = useState([]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [permissions, setPermissions] = useState({});
-  const { permissions: currentPermissions, updatePermissions } = usePermissions();
+  const [settingsData, setSettingsData] = useState({});
+  const { permissions: currentPermissions, updatePermissions, refreshPermissions } = usePermissions();
 
   useEffect(() => {
     fetchDashboardData();
@@ -43,6 +45,17 @@ const AdminDashboard: React.FC = () => {
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     }
+  };
+
+  const handleSettingsOpen = () => {
+    // Refresh permissions when opening settings
+    refreshPermissions();
+    setSettingsData({
+      hospitalName: 'General Hospital',
+      timezone: 'UTC-5 (Eastern)',
+      language: 'English'
+    });
+    setIsSettingsOpen(true);
   };
 
   // Calculate real revenue from billing data
@@ -197,7 +210,7 @@ const AdminDashboard: React.FC = () => {
               </Button>
               <Button
                 className="h-20 flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700"
-                onClick={() => setIsSettingsOpen(true)}
+                onClick={handleSettingsOpen}
               >
                 <Settings className="w-6 h-6" />
                 <span className="text-sm">System Settings</span>
@@ -401,18 +414,93 @@ const AdminDashboard: React.FC = () => {
           <DialogHeader>
             <DialogTitle>System Settings & Permissions</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSettingsSubmit} className="space-y-6">
+          <SettingsForm 
+            currentPermissions={currentPermissions}
+            settingsData={settingsData}
+            onSubmit={handleSettingsSubmit}
+            onClose={() => setIsSettingsOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+const SettingsForm: React.FC<{
+  currentPermissions: any;
+  settingsData: any;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+}> = ({ currentPermissions, settingsData, onSubmit, onClose }) => {
+  const [localPermissions, setLocalPermissions] = useState(currentPermissions);
+  const [localSettings, setLocalSettings] = useState(settingsData);
+
+  useEffect(() => {
+    setLocalPermissions(currentPermissions);
+  }, [currentPermissions]);
+
+  const handlePermissionChange = (role: string, module: string, action: string, allowed: boolean) => {
+    setLocalPermissions((prev: any) => ({
+      ...prev,
+      [role]: prev[role]?.map((permission: any) => 
+        permission.module === module && permission.action === action
+          ? { ...permission, allowed }
+          : permission
+      ) || []
+    }));
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Create a custom event with the updated permissions
+    const formData = new FormData();
+    
+    // Add settings data
+    Object.entries(localSettings).forEach(([key, value]) => {
+      formData.append(key, value as string);
+    });
+
+    // Add permissions data
+    Object.entries(localPermissions).forEach(([role, permissions]: [string, any]) => {
+      permissions.forEach((permission: any) => {
+        const fieldName = `${role}_${permission.module}_${permission.action}`;
+        if (permission.allowed) {
+          formData.append(fieldName, 'on');
+        }
+      });
+    });
+
+    // Create a synthetic event
+    const syntheticEvent = {
+      ...e,
+      target: { ...e.target, formData: localPermissions }
+    };
+
+    onSubmit(syntheticEvent as any);
+  };
+
+  return (
+    <form onSubmit={handleFormSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* General Settings */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">General Settings</h3>
                 <div className="space-y-2">
                   <Label htmlFor="hospitalName">Hospital Name</Label>
-                  <Input id="hospitalName" defaultValue="General Hospital" />
+                  <Input 
+                    id="hospitalName" 
+                    value={localSettings.hospitalName || 'General Hospital'}
+                    onChange={(e) => setLocalSettings(prev => ({ ...prev, hospitalName: e.target.value }))}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="timezone">Timezone</Label>
-                  <select className="w-full p-2 border rounded-md">
+                  <select 
+                    className="w-full p-2 border rounded-md"
+                    value={localSettings.timezone || 'UTC-5 (Eastern)'}
+                    onChange={(e) => setLocalSettings(prev => ({ ...prev, timezone: e.target.value }))}
+                  >
                     <option>UTC-5 (Eastern)</option>
                     <option>UTC-6 (Central)</option>
                     <option>UTC-7 (Mountain)</option>
@@ -421,7 +509,11 @@ const AdminDashboard: React.FC = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="language">Default Language</Label>
-                  <select className="w-full p-2 border rounded-md">
+                  <select 
+                    className="w-full p-2 border rounded-md"
+                    value={localSettings.language || 'English'}
+                    onChange={(e) => setLocalSettings(prev => ({ ...prev, language: e.target.value }))}
+                  >
                     <option>English</option>
                     <option>Spanish</option>
                     <option>French</option>
@@ -437,9 +529,139 @@ const AdminDashboard: React.FC = () => {
                 <div className="border rounded-lg p-4">
                   <h4 className="font-medium mb-3">Doctor Permissions</h4>
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    {currentPermissions.DOCTOR?.map((permission: any, index: number) => (
-                      <label key={index} className="flex items-center space-x-2">
-                        <input 
+                    {localPermissions.DOCTOR?.map((permission: any, index: number) => (
+                      <div key={index} className="flex items-center justify-between p-2 border rounded">
+                        <span className="text-sm">{permission.action} {permission.module}</span>
+                        <Switch
+                          checked={permission.allowed}
+                          onCheckedChange={(checked) => 
+                            handlePermissionChange('DOCTOR', permission.module, permission.action, checked)
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Nurse Permissions */}
+                <div className="border rounded-lg p-4">
+                  <h4 className="font-medium mb-3">Nurse Permissions</h4>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    {localPermissions.NURSE?.map((permission: any, index: number) => (
+                      <div key={index} className="flex items-center justify-between p-2 border rounded">
+                        <span className="text-sm">{permission.action} {permission.module}</span>
+                        <Switch
+                          checked={permission.allowed}
+                          onCheckedChange={(checked) => 
+                            handlePermissionChange('NURSE', permission.module, permission.action, checked)
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Receptionist Permissions */}
+                <div className="border rounded-lg p-4">
+                  <h4 className="font-medium mb-3">Receptionist Permissions</h4>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    {localPermissions.RECEPTIONIST?.map((permission: any, index: number) => (
+                      <div key={index} className="flex items-center justify-between p-2 border rounded">
+                        <span className="text-sm">{permission.action} {permission.module}</span>
+                        <Switch
+                          checked={permission.allowed}
+                          onCheckedChange={(checked) => 
+                            handlePermissionChange('RECEPTIONIST', permission.module, permission.action, checked)
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Pharmacist Permissions */}
+                <div className="border rounded-lg p-4">
+                  <h4 className="font-medium mb-3">Pharmacist Permissions</h4>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    {localPermissions.PHARMACIST?.map((permission: any, index: number) => (
+                      <div key={index} className="flex items-center justify-between p-2 border rounded">
+                        <span className="text-sm">{permission.action} {permission.module}</span>
+                        <Switch
+                          checked={permission.allowed}
+                          onCheckedChange={(checked) => 
+                            handlePermissionChange('PHARMACIST', permission.module, permission.action, checked)
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Security Settings */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Security Settings</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="sessionTimeout">Session Timeout (minutes)</Label>
+                  <Input 
+                    id="sessionTimeout" 
+                    type="number" 
+                    value={localSettings.sessionTimeout || 30}
+                    onChange={(e) => setLocalSettings(prev => ({ ...prev, sessionTimeout: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="passwordExpiry">Password Expiry (days)</Label>
+                  <Input 
+                    id="passwordExpiry" 
+                    type="number" 
+                    value={localSettings.passwordExpiry || 90}
+                    onChange={(e) => setLocalSettings(prev => ({ ...prev, passwordExpiry: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="maxLoginAttempts">Max Login Attempts</Label>
+                  <Input 
+                    id="maxLoginAttempts" 
+                    type="number" 
+                    value={localSettings.maxLoginAttempts || 3}
+                    onChange={(e) => setLocalSettings(prev => ({ ...prev, maxLoginAttempts: e.target.value }))}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch 
+                  id="twoFactor" 
+                  checked={localSettings.twoFactor !== false}
+                  onCheckedChange={(checked) => setLocalSettings(prev => ({ ...prev, twoFactor: checked }))}
+                />
+                <Label htmlFor="twoFactor">Enable Two-Factor Authentication</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch 
+                  id="auditLog" 
+                  checked={localSettings.auditLog !== false}
+                  onCheckedChange={(checked) => setLocalSettings(prev => ({ ...prev, auditLog: checked }))}
+                />
+                <Label htmlFor="auditLog">Enable Audit Logging</Label>
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-2 pt-4">
+              <Button type="button" variant="outline" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-teal-500 hover:bg-teal-600">
+                Save Settings
+              </Button>
+            </div>
+          </form>
+  );
+};
+
+export default AdminDashboard;
                           type="checkbox" 
                           name={`DOCTOR_${permission.module}_${permission.action}`}
                           defaultChecked={permission.allowed} 

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import api from '@/services/api';
+import { toast } from 'react-hot-toast';
 
 interface Permission {
   module: string;
@@ -17,6 +18,7 @@ interface PermissionsContextType {
   hasPermission: (module: string, action: string) => boolean;
   updatePermissions: (rolePermissions: RolePermissions) => void;
   loading: boolean;
+  refreshPermissions: () => void;
 }
 
 const PermissionsContext = createContext<PermissionsContextType | undefined>(undefined);
@@ -145,6 +147,7 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   useEffect(() => {
     fetchPermissions();
+    setupRealTimeUpdates();
   }, [user]);
 
   const fetchPermissions = async () => {
@@ -166,6 +169,26 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   };
 
+  const setupRealTimeUpdates = () => {
+    // Poll for permission updates every 10 seconds
+    const interval = setInterval(() => {
+      fetchPermissions();
+    }, 10000);
+
+    return () => clearInterval(interval);
+  };
+
+  const refreshPermissions = () => {
+    fetchPermissions();
+  };
+
+  // Listen for permission updates
+  useEffect(() => {
+    const handlePermissionUpdate = () => fetchPermissions();
+    window.addEventListener('permissionsUpdated', handlePermissionUpdate);
+    return () => window.removeEventListener('permissionsUpdated', handlePermissionUpdate);
+  }, []);
+
   const hasPermission = (module: string, action: string): boolean => {
     if (!user) return false;
     
@@ -180,6 +203,11 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
     try {
       await api.post('/system-settings/permissions', rolePermissions);
       setPermissions(rolePermissions);
+      
+      // Notify all components about permission update
+      window.dispatchEvent(new CustomEvent('permissionsUpdated'));
+      
+      toast.success('Permissions updated successfully!');
     } catch (error) {
       console.error('Error updating permissions:', error);
       throw error;
@@ -187,7 +215,7 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   return (
-    <PermissionsContext.Provider value={{ permissions, hasPermission, updatePermissions, loading }}>
+    <PermissionsContext.Provider value={{ permissions, hasPermission, updatePermissions, loading, refreshPermissions }}>
       {children}
     </PermissionsContext.Provider>
   );
