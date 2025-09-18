@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { ThemeProvider } from '@/context/ThemeContext';
+import { PermissionsProvider } from '@/context/PermissionsContext';
 import ProtectedRoute from '@/components/common/ProtectedRoute';
 import Layout from '@/components/layout/Layout';
 import LoginForm from '@/components/auth/LoginForm';
@@ -39,77 +40,79 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
-          <Router>
-            <Routes>
-              <Route path="/login" element={<LoginForm />} />
-              <Route path="/" element={<InitialRedirect />} />
-              <Route
-                path="/app"
-                element={
-                  <ProtectedRoute>
-                    <Layout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route path="dashboard" element={<RoleDashboard />} />
-                <Route path="patients" element={<Patients />} />
-                <Route path="appointments" element={<Appointments />} />
-                <Route path="records" element={
-                  <ProtectedRoute allowedRoles={['DOCTOR', 'NURSE', 'ADMINISTRATOR']}>
-                    <PatientRecords />
-                  </ProtectedRoute>
-                } />
-                <Route path="prescriptions" element={
-                  <ProtectedRoute allowedRoles={['DOCTOR', 'PHARMACIST', 'ADMINISTRATOR']}>
-                    <Prescriptions />
-                  </ProtectedRoute>
-                } />
-                <Route path="billing" element={
-                  <ProtectedRoute allowedRoles={['RECEPTIONIST', 'ADMINISTRATOR']}>
-                    <Billing />
-                  </ProtectedRoute>
-                } />
-                <Route path="staff" element={
-                  <ProtectedRoute allowedRoles={['ADMINISTRATOR']}>
-                    <Staff />
-                  </ProtectedRoute>
-                } />
-                <Route path="inventory" element={
-                  <ProtectedRoute allowedRoles={['PHARMACIST', 'ADMINISTRATOR']}>
-                    <Inventory />
-                  </ProtectedRoute>
-                } />
-                <Route path="vitals" element={
-                  <ProtectedRoute allowedRoles={['NURSE', 'DOCTOR', 'ADMINISTRATOR']}>
-                    <VitalSigns />
-                  </ProtectedRoute>
-                } />
-                <Route path="reports" element={
-                  <ProtectedRoute allowedRoles={['ADMINISTRATOR']}>
-                    <Reports />
-                  </ProtectedRoute>
-                } />
-              </Route>
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Layout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<RoleDashboard />} />
-              </Route>
-              <Route path="/unauthorized" element={
-                <div className="min-h-screen flex items-center justify-center">
-                  <div className="text-center">
-                    <h1 className="text-2xl font-bold text-red-600">Access Denied</h1>
-                    <p className="text-gray-600">You don't have permission to access this page.</p>
+          <PermissionsProvider>
+            <Router>
+              <Routes>
+                <Route path="/login" element={<LoginForm />} />
+                <Route path="/" element={<InitialRedirect />} />
+                <Route
+                  path="/app"
+                  element={
+                    <ProtectedRoute>
+                      <Layout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route path="dashboard" element={<RoleDashboard />} />
+                  <Route path="patients" element={<Patients />} />
+                  <Route path="appointments" element={<Appointments />} />
+                  <Route path="records" element={
+                    <ProtectedRoute allowedRoles={['DOCTOR', 'NURSE', 'ADMINISTRATOR']}>
+                      <PatientRecords />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="prescriptions" element={
+                    <ProtectedRoute allowedRoles={['DOCTOR', 'PHARMACIST', 'ADMINISTRATOR']}>
+                      <Prescriptions />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="billing" element={
+                    <ProtectedRoute allowedRoles={['RECEPTIONIST', 'ADMINISTRATOR']}>
+                      <Billing />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="staff" element={
+                    <ProtectedRoute allowedRoles={['ADMINISTRATOR']}>
+                      <Staff />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="inventory" element={
+                    <ProtectedRoute allowedRoles={['PHARMACIST', 'ADMINISTRATOR']}>
+                      <Inventory />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="vitals" element={
+                    <ProtectedRoute allowedRoles={['NURSE', 'DOCTOR', 'ADMINISTRATOR']}>
+                      <VitalSigns />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="reports" element={
+                    <ProtectedRoute allowedRoles={['ADMINISTRATOR']}>
+                      <Reports />
+                    </ProtectedRoute>
+                  } />
+                </Route>
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Layout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<RoleDashboard />} />
+                </Route>
+                <Route path="/unauthorized" element={
+                  <div className="min-h-screen flex items-center justify-center">
+                    <div className="text-center">
+                      <h1 className="text-2xl font-bold text-red-600">Access Denied</h1>
+                      <p className="text-gray-600">You don't have permission to access this page.</p>
+                    </div>
                   </div>
-                </div>
-              } />
-            </Routes>
-          </Router>
+                } />
+              </Routes>
+            </Router>
+          </PermissionsProvider>
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>

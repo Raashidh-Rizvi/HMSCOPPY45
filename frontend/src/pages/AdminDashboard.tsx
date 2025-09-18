@@ -9,6 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { usePermissions } from '@/context/PermissionsContext';
 
 import api from '@/services/api';
 
@@ -21,6 +22,7 @@ const AdminDashboard: React.FC = () => {
   const [billings, setBillings] = useState([]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [permissions, setPermissions] = useState({});
+  const { permissions: currentPermissions, updatePermissions } = usePermissions();
 
   useEffect(() => {
     fetchDashboardData();
@@ -114,7 +116,26 @@ const AdminDashboard: React.FC = () => {
 
   const handleSettingsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle settings update
+    const formData = new FormData(e.target as HTMLFormElement);
+    
+    // Get all form data for permissions
+    const updatedPermissions = { ...currentPermissions };
+    
+    // Update permissions based on form data
+    Object.keys(updatedPermissions).forEach(role => {
+      updatedPermissions[role].forEach((permission: any) => {
+        const fieldName = `${role}_${permission.module}_${permission.action}`;
+        permission.allowed = formData.get(fieldName) === 'on';
+      });
+    });
+    
+    // Save permissions
+    updatePermissions(updatedPermissions).then(() => {
+      alert('Permissions updated successfully!');
+    }).catch((error) => {
+      alert('Error updating permissions: ' + error.message);
+    });
+    
     setIsSettingsOpen(false);
   };
 
@@ -416,30 +437,16 @@ const AdminDashboard: React.FC = () => {
                 <div className="border rounded-lg p-4">
                   <h4 className="font-medium mb-3">Doctor Permissions</h4>
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked />
-                      <span>View Patients</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked />
-                      <span>Edit Patients</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked />
-                      <span>View Records</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked />
-                      <span>Edit Records</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked />
-                      <span>Prescribe Medication</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" />
-                      <span>Delete Records</span>
-                    </label>
+                    {currentPermissions.DOCTOR?.map((permission: any, index: number) => (
+                      <label key={index} className="flex items-center space-x-2">
+                        <input 
+                          type="checkbox" 
+                          name={`DOCTOR_${permission.module}_${permission.action}`}
+                          defaultChecked={permission.allowed} 
+                        />
+                        <span>{permission.action} {permission.module}</span>
+                      </label>
+                    ))}
                   </div>
                 </div>
 
@@ -447,30 +454,16 @@ const AdminDashboard: React.FC = () => {
                 <div className="border rounded-lg p-4">
                   <h4 className="font-medium mb-3">Nurse Permissions</h4>
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked />
-                      <span>View Patients</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked />
-                      <span>Record Vitals</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked />
-                      <span>View Records</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" />
-                      <span>Edit Records</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" />
-                      <span>Delete Records</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" />
-                      <span>View Billing</span>
-                    </label>
+                    {currentPermissions.NURSE?.map((permission: any, index: number) => (
+                      <label key={index} className="flex items-center space-x-2">
+                        <input 
+                          type="checkbox" 
+                          name={`NURSE_${permission.module}_${permission.action}`}
+                          defaultChecked={permission.allowed} 
+                        />
+                        <span>{permission.action} {permission.module}</span>
+                      </label>
+                    ))}
                   </div>
                 </div>
 
@@ -478,30 +471,16 @@ const AdminDashboard: React.FC = () => {
                 <div className="border rounded-lg p-4">
                   <h4 className="font-medium mb-3">Receptionist Permissions</h4>
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked />
-                      <span>Register Patients</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked />
-                      <span>Schedule Appointments</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked />
-                      <span>Process Billing</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" />
-                      <span>View Records</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" />
-                      <span>Delete Patients</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" />
-                      <span>View Reports</span>
-                    </label>
+                    {currentPermissions.RECEPTIONIST?.map((permission: any, index: number) => (
+                      <label key={index} className="flex items-center space-x-2">
+                        <input 
+                          type="checkbox" 
+                          name={`RECEPTIONIST_${permission.module}_${permission.action}`}
+                          defaultChecked={permission.allowed} 
+                        />
+                        <span>{permission.action} {permission.module}</span>
+                      </label>
+                    ))}
                   </div>
                 </div>
 
@@ -509,30 +488,16 @@ const AdminDashboard: React.FC = () => {
                 <div className="border rounded-lg p-4">
                   <h4 className="font-medium mb-3">Pharmacist Permissions</h4>
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked />
-                      <span>View Prescriptions</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked />
-                      <span>Manage Inventory</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked />
-                      <span>Dispense Medication</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" />
-                      <span>View Patient Records</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" />
-                      <span>Delete Inventory</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" />
-                      <span>View Reports</span>
-                    </label>
+                    {currentPermissions.PHARMACIST?.map((permission: any, index: number) => (
+                      <label key={index} className="flex items-center space-x-2">
+                        <input 
+                          type="checkbox" 
+                          name={`PHARMACIST_${permission.module}_${permission.action}`}
+                          defaultChecked={permission.allowed} 
+                        />
+                        <span>{permission.action} {permission.module}</span>
+                      </label>
+                    ))}
                   </div>
                 </div>
               </div>
