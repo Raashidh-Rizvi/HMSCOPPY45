@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Users, BarChart3, Shield, TrendingUp, Activity, DollarSign, Calendar } from 'lucide-react';
+import { Users, BarChart3, Settings, Shield, TrendingUp, Activity, DollarSign, Calendar } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
@@ -15,7 +15,7 @@ const AdminDashboard: React.FC = () => {
   const [users, setUsers] = useState([]);
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
-  const [billings, setBillings] = useState([]);
+  const [metrics, setMetrics] = useState([]);
 
   useEffect(() => {
     fetchDashboardData();
@@ -27,44 +27,26 @@ const AdminDashboard: React.FC = () => {
         api.get('/users'),
         api.get('/patients'),
         api.get('/appointments'),
-        api.get('/billings')
+        api.get('/metrics')
       ]);
       setUsers(usersRes.data);
       setPatients(patientsRes.data);
       setAppointments(appointmentsRes.data);
-      setBillings(metricsRes.data);
+      setMetrics(metricsRes.data);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     }
   };
 
-  // Generate real data for charts
-  const monthlyData = React.useMemo(() => {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-    return months.map((month, index) => {
-      const monthPatients = patients.filter(p => {
-        const patientMonth = new Date(p.registrationDate).getMonth();
-        return patientMonth === index;
-      }).length;
-      
-      const monthRevenue = billings.filter(b => {
-        const billMonth = new Date(b.billingDate).getMonth();
-        return billMonth === index && b.status === 'PAID';
-      }).reduce((sum, bill) => sum + bill.amount, 0);
-      
-      const monthAppointments = appointments.filter(a => {
-        const appointmentMonth = new Date(a.appointmentDateTime).getMonth();
-        return appointmentMonth === index;
-      }).length;
-      
-      return { 
-        month, 
-        patients: monthPatients, 
-        revenue: monthRevenue, 
-        appointments: monthAppointments 
-      };
-    });
-  }, [patients, billings, appointments]);
+  // Mock data for charts
+  const monthlyData = [
+    { month: 'Jan', patients: 120, revenue: 45000, appointments: 180 },
+    { month: 'Feb', patients: 135, revenue: 52000, appointments: 195 },
+    { month: 'Mar', patients: 148, revenue: 48000, appointments: 210 },
+    { month: 'Apr', patients: 162, revenue: 61000, appointments: 225 },
+    { month: 'May', patients: 178, revenue: 55000, appointments: 240 },
+    { month: 'Jun', patients: 195, revenue: 67000, appointments: 260 },
+  ];
 
   const departmentData = [
     { name: 'Cardiology', value: 30, color: '#0d9488' },
@@ -78,8 +60,6 @@ const AdminDashboard: React.FC = () => {
     acc[user.role] = (acc[user.role] || 0) + 1;
     return acc;
   }, {});
-
-  const totalRevenue = billings.filter(b => b.status === 'PAID').reduce((sum, bill) => sum + bill.amount, 0);
 
   const stats = [
     {
@@ -100,7 +80,7 @@ const AdminDashboard: React.FC = () => {
     },
     {
       title: 'Monthly Revenue',
-      value: `$${totalRevenue.toLocaleString()}`,
+      value: '$67,000',
       change: '+15% from last month',
       icon: DollarSign,
       color: 'text-teal-600',
@@ -128,6 +108,12 @@ const AdminDashboard: React.FC = () => {
             Welcome, {user?.name}
           </h1>
           <p className="text-gray-600 dark:text-gray-400">Administrator Dashboard - System overview and management</p>
+        </div>
+        <div className="flex space-x-2">
+          <Button className="bg-teal-500 hover:bg-teal-600">
+            <Settings className="w-4 h-4 mr-2" />
+            System Settings
+          </Button>
         </div>
       </motion.div>
 
