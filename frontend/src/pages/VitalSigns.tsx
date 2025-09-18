@@ -1,113 +1,48 @@
 import React, { useState } from 'react';
-import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Search, Heart, Thermometer, Activity, Edit, Trash2, Eye } from 'lucide-react';
+import { Plus, Search, Heart, Thermometer, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import api from '@/services/api';
-
-interface VitalSignsLog {
-  id: number;
-  nurse: {
-    id: number;
-    name: string;
-  };
-  patient: {
-    id: number;
-    firstName: string;
-    lastName: string;
-  };
-  temperature: number;
-  bloodPressure: string;
-  heartRate: number;
-  respiratoryRate: number;
-  logDateTime: string;
-}
+import { VitalSignsLog } from '@/types';
 
 const VitalSigns: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedVital, setSelectedVital] = useState<VitalSignsLog | null>(null);
-  const [vitalSigns, setVitalSigns] = useState<VitalSignsLog[]>([]);
-  const [patients, setPatients] = useState([]);
-  const [nurses, setNurses] = useState([]);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const [vitalsRes, patientsRes, usersRes] = await Promise.all([
-        api.get('/vital-signs'),
-        api.get('/patients'),
-        api.get('/users')
-      ]);
-      
-      setVitalSigns(vitalsRes.data);
-      setPatients(patientsRes.data);
-      setNurses(usersRes.data.filter((user: any) => user.role === 'NURSE'));
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  const handleEdit = (vital: VitalSignsLog) => {
-    setSelectedVital(vital);
-    setIsDialogOpen(true);
-  };
-
-  const handleAddNew = () => {
-    setSelectedVital(null);
-    setIsDialogOpen(true);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    
-    const vitalData = {
-      patient: { id: parseInt(formData.get('patientId') as string) },
-      nurse: { id: parseInt(formData.get('nurseId') as string) },
-      temperature: parseFloat(formData.get('temperature') as string),
-      bloodPressure: formData.get('bloodPressure') as string,
-      heartRate: parseInt(formData.get('heartRate') as string),
-      respiratoryRate: parseInt(formData.get('respiratoryRate') as string),
-      logDateTime: formData.get('logDateTime') as string,
-    };
-
-    try {
-      if (selectedVital) {
-        await api.put(`/vital-signs/${selectedVital.id}`, vitalData);
-      } else {
-        await api.post('/vital-signs', vitalData);
-      }
-      
-      setIsDialogOpen(false);
-      fetchData();
-    } catch (error) {
-      console.error('Error saving vital signs:', error);
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this vital signs record?')) {
-      try {
-        await api.delete(`/vital-signs/${id}`);
-        fetchData();
-      } catch (error) {
-        console.error('Error deleting vital signs:', error);
-      }
-    }
-  };
-
-  const filteredVitalSigns = vitalSigns.filter(vital =>
-    `${vital.patient.firstName} ${vital.patient.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Mock data
+  const vitalSigns: VitalSignsLog[] = [
+    {
+      id: 1,
+      nurse: {
+        id: 3,
+        username: 'nurse.wilson',
+        role: 'NURSE',
+        name: 'Nurse Wilson',
+        email: 'wilson@hospital.com',
+        phone: '+1-555-0321'
+      },
+      patient: {
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        dob: '1985-06-15',
+        gender: 'Male',
+        address: '123 Main St',
+        phone: '+1-555-0123',
+        email: 'john.doe@email.com',
+        registrationDate: '2024-01-15'
+      },
+      temperature: 98.6,
+      bloodPressure: '120/80',
+      heartRate: 72,
+      respiratoryRate: 16,
+      logDateTime: '2024-12-20T08:30:00'
+    },
+  ];
 
   const getVitalStatus = (vital: VitalSignsLog) => {
     // Simple vital signs assessment
@@ -133,7 +68,7 @@ const VitalSigns: React.FC = () => {
           <h1 className="text-3xl font-bold text-navy-900 dark:text-white">Vital Signs</h1>
           <p className="text-gray-600 dark:text-gray-400">Monitor and record patient vital signs</p>
         </div>
-        <Button onClick={handleAddNew} className="bg-teal-500 hover:bg-teal-600">
+        <Button onClick={() => setIsDialogOpen(true)} className="bg-teal-500 hover:bg-teal-600">
           <Plus className="w-4 h-4 mr-2" />
           Record Vitals
         </Button>
@@ -223,11 +158,10 @@ const VitalSigns: React.FC = () => {
                 <TableHead>Recorded By</TableHead>
                 <TableHead>Date & Time</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredVitalSigns.map((vital, index) => {
+              {vitalSigns.map((vital, index) => {
                 const status = getVitalStatus(vital);
                 return (
                   <motion.tr
@@ -252,24 +186,6 @@ const VitalSigns: React.FC = () => {
                         {status.status}
                       </span>
                     </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end space-x-2">
-                        <Button variant="ghost" size="icon">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleEdit(vital)}>
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="text-red-500 hover:text-red-700"
-                          onClick={() => handleDelete(vital.id)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
                   </motion.tr>
                 );
               })}
@@ -282,64 +198,32 @@ const VitalSigns: React.FC = () => {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>
-              {selectedVital ? 'Edit Vital Signs' : 'Record Vital Signs'}
-            </DialogTitle>
+            <DialogTitle>Record Vital Signs</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="patientId">Patient</Label>
-              <select
-                name="patientId"
-                defaultValue={selectedVital?.patient.id}
-                className="w-full p-2 border rounded-md"
-                required
-              >
-                <option value="">Select Patient</option>
-                {patients.map((patient: any) => (
-                  <option key={patient.id} value={patient.id}>
-                    {patient.firstName} {patient.lastName}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="nurseId">Nurse</Label>
-              <select
-                name="nurseId"
-                defaultValue={selectedVital?.nurse.id}
-                className="w-full p-2 border rounded-md"
-                required
-              >
-                <option value="">Select Nurse</option>
-                {nurses.map((nurse: any) => (
-                  <option key={nurse.id} value={nurse.id}>
-                    {nurse.name}
-                  </option>
-                ))}
-              </select>
+              <Label htmlFor="patient">Patient</Label>
+              <Input
+                id="patient"
+                placeholder="Select patient"
+              />
             </div>
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="temperature">Temperature (°F)</Label>
                 <Input
-                  name="temperature"
+                  id="temperature"
                   type="number"
                   step="0.1"
-                  defaultValue={selectedVital?.temperature}
                   placeholder="98.6"
-                  required
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="bloodPressure">Blood Pressure</Label>
                 <Input
-                  name="bloodPressure"
-                  defaultValue={selectedVital?.bloodPressure}
+                  id="bloodPressure"
                   placeholder="120/80"
-                  required
                 />
               </div>
             </div>
@@ -348,41 +232,27 @@ const VitalSigns: React.FC = () => {
               <div className="space-y-2">
                 <Label htmlFor="heartRate">Heart Rate (bpm)</Label>
                 <Input
-                  name="heartRate"
+                  id="heartRate"
                   type="number"
-                  defaultValue={selectedVital?.heartRate}
                   placeholder="72"
-                  required
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="respiratoryRate">Respiratory Rate (/min)</Label>
                 <Input
-                  name="respiratoryRate"
+                  id="respiratoryRate"
                   type="number"
-                  defaultValue={selectedVital?.respiratoryRate}
                   placeholder="16"
-                  required
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="logDateTime">Date & Time</Label>
-              <Input
-                name="logDateTime"
-                type="datetime-local"
-                defaultValue={selectedVital ? selectedVital.logDateTime.slice(0, 16) : ''}
-                required
-              />
-            </div>
-
             <div className="flex justify-end space-x-2 pt-4">
-              <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
               <Button type="submit" className="bg-teal-500 hover:bg-teal-600">
-                {selectedVital ? 'Update' : 'Record'} Vital Signs
+                Record Vital Signs
               </Button>
             </div>
           </form>

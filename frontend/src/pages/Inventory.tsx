@@ -1,92 +1,41 @@
 import React, { useState } from 'react';
-import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Search, Package, AlertTriangle, TrendingDown, Edit, Trash2, Eye } from 'lucide-react';
+import { Plus, Search, Package, AlertTriangle, TrendingDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import api from '@/services/api';
-
-interface InventoryItem {
-  id: number;
-  itemName: string;
-  quantityAvailable: number;
-  reorderLevel: number;
-  lastRestockDate: string;
-}
+import { InventoryItem } from '@/types';
 
 const Inventory: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
-  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await api.get('/inventory');
-      setInventoryItems(response.data);
-    } catch (error) {
-      console.error('Error fetching inventory data:', error);
-    }
-  };
-
-  const handleEdit = (item: InventoryItem) => {
-    setSelectedItem(item);
-    setIsDialogOpen(true);
-  };
-
-  const handleAddNew = () => {
-    setSelectedItem(null);
-    setIsDialogOpen(true);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    
-    const itemData = {
-      itemName: formData.get('itemName') as string,
-      quantityAvailable: parseInt(formData.get('quantityAvailable') as string),
-      reorderLevel: parseInt(formData.get('reorderLevel') as string),
-      lastRestockDate: formData.get('lastRestockDate') as string,
-    };
-
-    try {
-      if (selectedItem) {
-        await api.put(`/inventory/${selectedItem.id}`, itemData);
-      } else {
-        await api.post('/inventory', itemData);
-      }
-      
-      setIsDialogOpen(false);
-      fetchData();
-    } catch (error) {
-      console.error('Error saving inventory item:', error);
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this item?')) {
-      try {
-        await api.delete(`/inventory/${id}`);
-        fetchData();
-      } catch (error) {
-        console.error('Error deleting inventory item:', error);
-      }
-    }
-  };
+  // Mock data
+  const inventoryItems: InventoryItem[] = [
+    {
+      id: 1,
+      itemName: 'Paracetamol 500mg',
+      quantityAvailable: 150,
+      reorderLevel: 50,
+      lastRestockDate: '2024-12-01'
+    },
+    {
+      id: 2,
+      itemName: 'Surgical Gloves',
+      quantityAvailable: 25,
+      reorderLevel: 100,
+      lastRestockDate: '2024-11-28'
+    },
+    {
+      id: 3,
+      itemName: 'Bandages',
+      quantityAvailable: 200,
+      reorderLevel: 75,
+      lastRestockDate: '2024-12-05'
+    },
+  ];
 
   const lowStockItems = inventoryItems.filter(item => item.quantityAvailable <= item.reorderLevel);
-  const filteredItems = inventoryItems.filter(item =>
-    item.itemName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const getStockStatus = (item: InventoryItem) => {
     if (item.quantityAvailable <= item.reorderLevel) {
@@ -108,7 +57,7 @@ const Inventory: React.FC = () => {
           <h1 className="text-3xl font-bold text-navy-900 dark:text-white">Inventory Management</h1>
           <p className="text-gray-600 dark:text-gray-400">Track and manage medical supplies and medications</p>
         </div>
-        <Button onClick={handleAddNew} className="bg-teal-500 hover:bg-teal-600">
+        <Button className="bg-teal-500 hover:bg-teal-600">
           <Plus className="w-4 h-4 mr-2" />
           Add Item
         </Button>
@@ -238,7 +187,7 @@ const Inventory: React.FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredItems.map((item, index) => {
+              {inventoryItems.map((item, index) => {
                 const stockStatus = getStockStatus(item);
                 return (
                   <motion.tr
@@ -258,19 +207,11 @@ const Inventory: React.FC = () => {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end space-x-2">
-                        <Button variant="ghost" size="icon">
-                          <Eye className="w-4 h-4" />
+                        <Button variant="outline" size="sm">
+                          Restock
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleEdit(item)}>
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="text-red-500 hover:text-red-700"
-                          onClick={() => handleDelete(item.id)}
-                        >
-                          <Trash2 className="w-4 h-4" />
+                        <Button variant="ghost" size="sm">
+                          Edit
                         </Button>
                       </div>
                     </TableCell>
@@ -281,69 +222,6 @@ const Inventory: React.FC = () => {
           </Table>
         </CardContent>
       </Card>
-
-      {/* Inventory Item Form Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>
-              {selectedItem ? 'Edit Inventory Item' : 'Add New Inventory Item'}
-            </DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="itemName">Item Name</Label>
-              <Input
-                name="itemName"
-                defaultValue={selectedItem?.itemName}
-                placeholder="Enter item name"
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="quantityAvailable">Quantity Available</Label>
-              <Input
-                name="quantityAvailable"
-                type="number"
-                defaultValue={selectedItem?.quantityAvailable}
-                placeholder="0"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="reorderLevel">Reorder Level</Label>
-              <Input
-                name="reorderLevel"
-                type="number"
-                defaultValue={selectedItem?.reorderLevel}
-                placeholder="0"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="lastRestockDate">Last Restock Date</Label>
-              <Input
-                name="lastRestockDate"
-                type="date"
-                defaultValue={selectedItem?.lastRestockDate}
-                required
-              />
-            </div>
-
-            <div className="flex justify-end space-x-2 pt-4">
-              <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" className="bg-teal-500 hover:bg-teal-600">
-                {selectedItem ? 'Update' : 'Create'} Item
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
