@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
     <motion.footer
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 text-white mt-auto"
+      className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white mt-auto"
     >
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -23,10 +23,10 @@ const Footer: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-xl font-bold">HMS</h3>
-                <p className="text-sm text-blue-200">Hospital Management</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Hospital Management</p>
               </div>
             </div>
-            <p className="text-slate-300 text-sm leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
               Comprehensive healthcare management system designed to streamline hospital operations and improve patient care.
             </p>
             <div className="flex space-x-3">
@@ -43,35 +43,35 @@ const Footer: React.FC = () => {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-white">Quick Links</h4>
+            <h4 className="text-lg font-semibold text-slate-900 dark:text-white">Quick Links</h4>
             <div className="space-y-2">
               <button
                 onClick={() => navigate('/app/patients')}
-                className="block text-slate-300 hover:text-white transition-colors duration-200 text-sm"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 text-sm"
               >
                 Patient Management
               </button>
               <button
                 onClick={() => navigate('/app/appointments')}
-                className="block text-slate-300 hover:text-white transition-colors duration-200 text-sm"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 text-sm"
               >
                 Appointments
               </button>
               <button
                 onClick={() => navigate('/app/records')}
-                className="block text-slate-300 hover:text-white transition-colors duration-200 text-sm"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 text-sm"
               >
                 Medical Records
               </button>
               <button
                 onClick={() => navigate('/app/billing')}
-                className="block text-slate-300 hover:text-white transition-colors duration-200 text-sm"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 text-sm"
               >
                 Billing & Payments
               </button>
               <button
                 onClick={() => navigate('/app/inventory')}
-                className="block text-slate-300 hover:text-white transition-colors duration-200 text-sm"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 text-sm"
               >
                 Inventory
               </button>
@@ -80,29 +80,29 @@ const Footer: React.FC = () => {
 
           {/* Services */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-white">Services</h4>
+            <h4 className="text-lg font-semibold text-slate-900 dark:text-white">Services</h4>
             <div className="space-y-2">
               <button
                 onClick={() => navigate('/app/vitals')}
-                className="block text-slate-300 hover:text-white transition-colors duration-200 text-sm"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 text-sm"
               >
                 Vital Signs Monitoring
               </button>
               <button
                 onClick={() => navigate('/app/prescriptions')}
-                className="block text-slate-300 hover:text-white transition-colors duration-200 text-sm"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 text-sm"
               >
                 Prescription Management
               </button>
               <button
                 onClick={() => navigate('/app/staff')}
-                className="block text-slate-300 hover:text-white transition-colors duration-200 text-sm"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 text-sm"
               >
                 Staff Management
               </button>
               <button
                 onClick={() => navigate('/app/reports')}
-                className="block text-slate-300 hover:text-white transition-colors duration-200 text-sm"
+                className="block text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 text-sm"
               >
                 Analytics & Reports
               </button>
@@ -111,42 +111,42 @@ const Footer: React.FC = () => {
 
           {/* Contact Info */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-white">Contact</h4>
+            <h4 className="text-lg font-semibold text-slate-900 dark:text-white">Contact</h4>
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
-                <Phone className="w-4 h-4 text-blue-400" />
-                <span className="text-slate-300 text-sm">+1 (555) 123-4567</span>
+                <Phone className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <span className="text-slate-600 dark:text-slate-400 text-sm">+1 (555) 123-4567</span>
               </div>
               <div className="flex items-center space-x-3">
-                <Mail className="w-4 h-4 text-blue-400" />
-                <span className="text-slate-300 text-sm">admin@hospital.com</span>
+                <Mail className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <span className="text-slate-600 dark:text-slate-400 text-sm">admin@hospital.com</span>
               </div>
               <div className="flex items-center space-x-3">
-                <MapPin className="w-4 h-4 text-blue-400" />
-                <span className="text-slate-300 text-sm">123 Healthcare Ave, Medical City</span>
+                <MapPin className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <span className="text-slate-600 dark:text-slate-400 text-sm">123 Healthcare Ave, Medical City</span>
               </div>
               <div className="flex items-center space-x-3">
-                <Shield className="w-4 h-4 text-green-400" />
-                <span className="text-slate-300 text-sm">HIPAA Compliant</span>
+                <Shield className="w-4 h-4 text-green-600 dark:text-green-400" />
+                <span className="text-slate-600 dark:text-slate-400 text-sm">HIPAA Compliant</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-slate-700 mt-8 pt-8">
+        <div className="border-t border-slate-200 dark:border-slate-700 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="text-slate-400 text-sm">
+            <div className="text-slate-500 dark:text-slate-400 text-sm">
               © 2024 Hospital Management System. All rights reserved.
             </div>
             <div className="flex space-x-6">
-              <button className="text-slate-400 hover:text-white transition-colors duration-200 text-sm">
+              <button className="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 text-sm">
                 Privacy Policy
               </button>
-              <button className="text-slate-400 hover:text-white transition-colors duration-200 text-sm">
+              <button className="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 text-sm">
                 Terms of Service
               </button>
-              <button className="text-slate-400 hover:text-white transition-colors duration-200 text-sm">
+              <button className="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 text-sm">
                 Support
               </button>
             </div>
