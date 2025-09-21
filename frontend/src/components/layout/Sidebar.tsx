@@ -11,7 +11,8 @@ import {
   Settings,
   Heart,
   UserPlus,
-  Stethoscope
+  Stethoscope,
+  Shield
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
@@ -43,6 +44,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, currentPath, onNavigate }) =>
           { icon: Package, label: 'Inventory', path: '/app/inventory' },
           { icon: Heart, label: 'Vital Signs', path: '/app/vitals' },
           { icon: BarChart3, label: 'Reports', path: '/app/reports' },
+          { icon: Shield, label: 'Permissions', path: '/app/permissions' },
         ];
       case 'RECEPTIONIST':
         return [

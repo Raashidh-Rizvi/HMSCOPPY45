@@ -21,6 +21,7 @@ import PatientRecords from '@/pages/PatientRecords';
 import Prescriptions from '@/pages/Prescriptions';
 import Billing from '@/pages/Billing';
 import Staff from '@/pages/Staff';
+import PermissionsManagement from '@/pages/PermissionsManagement';
 
 const queryClient = new QueryClient();
 
@@ -109,6 +110,11 @@ function App() {
                       <p className="text-gray-600">You don't have permission to access this page.</p>
                     </div>
                   </div>
+                } />
+                <Route path="permissions" element={
+                  <ProtectedRoute allowedRoles={['ADMINISTRATOR']}>
+                    <PermissionsManagement />
+                  </ProtectedRoute>
                 } />
               </Routes>
             </Router>
