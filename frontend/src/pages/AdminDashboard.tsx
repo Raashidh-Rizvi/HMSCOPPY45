@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Users, BarChart3, Settings, Shield, TrendingUp, Activity, DollarSign, Calendar } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
@@ -208,6 +209,13 @@ const AdminDashboard: React.FC = () => {
               >
                 <Shield className="w-6 h-6" />
                 <span className="text-sm">Permissions</span>
+              </Button>
+              <Button
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                onClick={() => navigate('/app/feedback')}
+              >
+                <MessageSquare className="w-6 h-6" />
+                <span className="text-sm">Feedback</span>
               </Button>
             </div>
           </CardContent>

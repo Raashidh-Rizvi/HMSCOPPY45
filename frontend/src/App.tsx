@@ -22,6 +22,7 @@ import Prescriptions from '@/pages/Prescriptions';
 import Billing from '@/pages/Billing';
 import Staff from '@/pages/Staff';
 import PermissionsManagement from '@/pages/PermissionsManagement';
+import FeedbackManagement from '@/pages/FeedbackManagement';
 
 const queryClient = new QueryClient();
 
@@ -90,6 +91,11 @@ function App() {
                   <Route path="reports" element={
                     <ProtectedRoute allowedRoles={['ADMINISTRATOR']}>
                       <Reports />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="feedback" element={
+                    <ProtectedRoute allowedRoles={['ADMINISTRATOR']}>
+                      <FeedbackManagement />
                     </ProtectedRoute>
                   } />
                 </Route>

@@ -76,21 +76,18 @@ const AnnouncementSystem: React.FC = () => {
 
     const createAnnouncement = async (announcementData: any) => {
         try {
-            const newAnnouncement: Announcement = {
-                id: Date.now(),
+            const newAnnouncement = {
                 ...announcementData,
-                createdBy: user?.name || 'Administrator',
-                createdAt: new Date().toISOString(),
-                read: false
+                createdBy: user?.name || 'Administrator'
             };
 
-            setAnnouncements(prev => [newAnnouncement, ...prev]);
+            const response = await api.post('/announcements', newAnnouncement);
+            
             setShowCreateDialog(false);
-
-            // In real implementation, send to server
-            await api.post('/announcements', newAnnouncement);
+            fetchAnnouncements(); // Refresh the list
         } catch (error) {
             console.error('Error creating announcement:', error);
+            alert('Error creating announcement. Please try again.');
         }
     };
 

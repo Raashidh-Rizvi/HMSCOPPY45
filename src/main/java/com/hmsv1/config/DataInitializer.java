@@ -2,8 +2,18 @@ package com.hmsv1.config;
 
 import com.hmsv1.entity.User;
 import com.hmsv1.entity.Patient;
+import com.hmsv1.entity.Appointment;
+import com.hmsv1.entity.Billing;
+import com.hmsv1.entity.MedicationPrescription;
+import com.hmsv1.entity.VitalSignsLog;
+import com.hmsv1.entity.InventoryItem;
 import com.hmsv1.repository.UserRepository;
 import com.hmsv1.repository.PatientRepository;
+import com.hmsv1.repository.AppointmentRepository;
+import com.hmsv1.repository.BillingRepository;
+import com.hmsv1.repository.MedicationPrescriptionRepository;
+import com.hmsv1.repository.VitalSignsLogRepository;
+import com.hmsv1.repository.InventoryItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Component
@@ -22,6 +33,20 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private PatientRepository patientRepository;
 
+    @Autowired
+    private AppointmentRepository appointmentRepository;
+
+    @Autowired
+    private BillingRepository billingRepository;
+
+    @Autowired
+    private MedicationPrescriptionRepository prescriptionRepository;
+
+    @Autowired
+    private VitalSignsLogRepository vitalSignsRepository;
+
+    @Autowired
+    private InventoryItemRepository inventoryRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -167,12 +192,159 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("Sample staff created successfully!");
         }
 
-        // Create sample announcements
-        createSampleAnnouncements();
+        // Create sample appointments
+        if (appointmentRepository.count() == 0) {
+            System.out.println("Creating sample appointments...");
+            createSampleAppointments();
+        }
+
+        // Create sample billing records
+        if (billingRepository.count() == 0) {
+            System.out.println("Creating sample billing records...");
+            createSampleBillings();
+        }
+
+        // Create sample prescriptions
+        if (prescriptionRepository.count() == 0) {
+            System.out.println("Creating sample prescriptions...");
+            createSamplePrescriptions();
+        }
+
+        // Create sample vital signs
+        if (vitalSignsRepository.count() == 0) {
+            System.out.println("Creating sample vital signs...");
+            createSampleVitalSigns();
+        }
+
+        // Create sample inventory
+        if (inventoryRepository.count() == 0) {
+            System.out.println("Creating sample inventory...");
+            createSampleInventory();
+        }
+        System.out.println("All sample data created successfully!");
     }
-    
-    private void createSampleAnnouncements() {
-        // This would be handled by the AnnouncementService if we had sample data to create
-        System.out.println("Announcement system ready for use!");
+
+    private void createSampleAppointments() {
+        List<Patient> patients = patientRepository.findAll();
+        List<User> doctors = userRepository.findAll().stream()
+                .filter(u -> u.getRole() == User.Role.DOCTOR)
+                .toList();
+
+        if (!patients.isEmpty() && !doctors.isEmpty()) {
+            Appointment apt1 = new Appointment();
+            apt1.setPatient(patients.get(0));
+            apt1.setDoctor(doctors.get(0));
+            apt1.setAppointmentDateTime(LocalDateTime.now().plusHours(2));
+            apt1.setStatus(Appointment.Status.SCHEDULED);
+            appointmentRepository.save(apt1);
+
+            Appointment apt2 = new Appointment();
+            apt2.setPatient(patients.get(1));
+            apt2.setDoctor(doctors.get(0));
+            apt2.setAppointmentDateTime(LocalDateTime.now().plusDays(1));
+            apt2.setStatus(Appointment.Status.SCHEDULED);
+            appointmentRepository.save(apt2);
+        }
+    }
+
+    private void createSampleBillings() {
+        List<Patient> patients = patientRepository.findAll();
+
+        if (!patients.isEmpty()) {
+            Billing bill1 = new Billing();
+            bill1.setPatient(patients.get(0));
+            bill1.setAmount(250.00);
+            bill1.setBillingDate(LocalDate.now().minusDays(5));
+            bill1.setStatus(Billing.Status.PAID);
+            billingRepository.save(bill1);
+
+            Billing bill2 = new Billing();
+            bill2.setPatient(patients.get(1));
+            bill2.setAmount(150.00);
+            bill2.setBillingDate(LocalDate.now().minusDays(2));
+            bill2.setStatus(Billing.Status.UNPAID);
+            billingRepository.save(bill2);
+        }
+    }
+
+    private void createSamplePrescriptions() {
+        List<Patient> patients = patientRepository.findAll();
+        List<User> doctors = userRepository.findAll().stream()
+                .filter(u -> u.getRole() == User.Role.DOCTOR)
+                .toList();
+
+        if (!patients.isEmpty() && !doctors.isEmpty()) {
+            MedicationPrescription prescription1 = new MedicationPrescription();
+            prescription1.setPatient(patients.get(0));
+            prescription1.setDoctor(doctors.get(0));
+            prescription1.setMedicationName("Amoxicillin");
+            prescription1.setDosage("500mg");
+            prescription1.setFrequency("Twice daily");
+            prescription1.setStartDate(LocalDate.now());
+            prescription1.setEndDate(LocalDate.now().plusDays(7));
+            prescriptionRepository.save(prescription1);
+
+            MedicationPrescription prescription2 = new MedicationPrescription();
+            prescription2.setPatient(patients.get(1));
+            prescription2.setDoctor(doctors.get(0));
+            prescription2.setMedicationName("Ibuprofen");
+            prescription2.setDosage("200mg");
+            prescription2.setFrequency("Three times daily");
+            prescription2.setStartDate(LocalDate.now().minusDays(2));
+            prescription2.setEndDate(LocalDate.now().plusDays(5));
+            prescriptionRepository.save(prescription2);
+        }
+    }
+
+    private void createSampleVitalSigns() {
+        List<Patient> patients = patientRepository.findAll();
+        List<User> nurses = userRepository.findAll().stream()
+                .filter(u -> u.getRole() == User.Role.NURSE)
+                .toList();
+
+        if (!patients.isEmpty() && !nurses.isEmpty()) {
+            VitalSignsLog vital1 = new VitalSignsLog();
+            vital1.setPatient(patients.get(0));
+            vital1.setNurse(nurses.get(0));
+            vital1.setTemperature(98.6);
+            vital1.setBloodPressure("120/80");
+            vital1.setHeartRate(72);
+            vital1.setRespiratoryRate(16);
+            vital1.setLogDateTime(LocalDateTime.now().minusHours(2));
+            vitalSignsRepository.save(vital1);
+
+            VitalSignsLog vital2 = new VitalSignsLog();
+            vital2.setPatient(patients.get(1));
+            vital2.setNurse(nurses.get(0));
+            vital2.setTemperature(99.2);
+            vital2.setBloodPressure("130/85");
+            vital2.setHeartRate(78);
+            vital2.setRespiratoryRate(18);
+            vital2.setLogDateTime(LocalDateTime.now().minusHours(1));
+            vitalSignsRepository.save(vital2);
+        }
+    }
+
+    private void createSampleInventory() {
+        InventoryItem item1 = new InventoryItem();
+        item1.setItemName("Paracetamol 500mg");
+        item1.setQuantityAvailable(150);
+        item1.setReorderLevel(50);
+        item1.setLastRestockDate(LocalDate.now().minusDays(10));
+        inventoryRepository.save(item1);
+
+        InventoryItem item2 = new InventoryItem();
+        item2.setItemName("Surgical Gloves");
+        item2.setQuantityAvailable(25);
+        item2.setReorderLevel(100);
+        item2.setLastRestockDate(LocalDate.now().minusDays(15));
+        inventoryRepository.save(item2);
+
+        InventoryItem item3 = new InventoryItem();
+        item3.setItemName("Bandages");
+        item3.setQuantityAvailable(200);
+        item3.setReorderLevel(75);
+        item3.setLastRestockDate(LocalDate.now().minusDays(5));
+        inventoryRepository.save(item3);
     }
 }

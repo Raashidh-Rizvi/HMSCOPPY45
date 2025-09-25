@@ -203,10 +203,21 @@ const ReceptionistDashboard: React.FC = () => {
                         </p>
                       </div>
                       <div className="flex space-x-2">
-                        <Button size="sm" variant="outline">
+                        <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => navigate('/app/appointments')}
+                        >
                           Reschedule
                         </Button>
-                        <Button size="sm" className="bg-teal-500 hover:bg-teal-600">
+                        <Button 
+                            size="sm" 
+                            className="bg-teal-500 hover:bg-teal-600"
+                            onClick={() => {
+                                // In a real app, this would update appointment status
+                                alert(`Checking in ${appointment.patient?.firstName} ${appointment.patient?.lastName}`);
+                            }}
+                        >
                           Check-in
                         </Button>
                       </div>
@@ -259,7 +270,12 @@ const ReceptionistDashboard: React.FC = () => {
                         <p className="text-sm text-gray-500 dark:text-gray-400">
                           {new Date(patient.registrationDate).toLocaleDateString()}
                         </p>
-                        <Button size="sm" variant="outline" className="mt-1">
+                        <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="mt-1"
+                            onClick={() => navigate('/app/patients')}
+                        >
                           View Details
                         </Button>
                       </div>

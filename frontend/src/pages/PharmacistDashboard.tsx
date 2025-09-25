@@ -243,10 +243,21 @@ const PharmacistDashboard: React.FC = () => {
                         </p>
                       </div>
                       <div className="flex space-x-2">
-                        <Button size="sm" variant="outline">
+                        <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => navigate('/app/prescriptions')}
+                        >
                           Review
                         </Button>
-                        <Button size="sm" className="bg-teal-500 hover:bg-teal-600">
+                        <Button 
+                            size="sm" 
+                            className="bg-teal-500 hover:bg-teal-600"
+                            onClick={() => {
+                                // In a real app, this would update prescription status
+                                alert(`Dispensing ${prescription.medicationName} for ${prescription.patient?.firstName} ${prescription.patient?.lastName}`);
+                            }}
+                        >
                           Dispense
                         </Button>
                       </div>

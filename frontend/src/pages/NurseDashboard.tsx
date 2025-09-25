@@ -200,10 +200,18 @@ const NurseDashboard: React.FC = () => {
                                                 </p>
                                             </div>
                                             <div className="flex space-x-2">
-                                                <Button size="sm" variant="outline">
+                                                <Button 
+                                                    size="sm" 
+                                                    variant="outline"
+                                                    onClick={() => navigate('/app/vitals')}
+                                                >
                                                     Vitals
                                                 </Button>
-                                                <Button size="sm" className="bg-teal-500 hover:bg-teal-600">
+                                                <Button 
+                                                    size="sm" 
+                                                    className="bg-teal-500 hover:bg-teal-600"
+                                                    onClick={() => navigate('/app/records')}
+                                                >
                                                     Care Plan
                                                 </Button>
                                             </div>
