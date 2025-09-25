@@ -214,6 +214,7 @@ const Patients: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>ID</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Date of Birth</TableHead>
                   <TableHead>Gender</TableHead>
@@ -232,6 +233,9 @@ const Patients: React.FC = () => {
                     transition={{ delay: index * 0.1 }}
                     className="hover:bg-slate-50 dark:hover:bg-slate-700/50"
                   >
+                    <TableCell className="font-mono text-sm text-slate-600 dark:text-slate-400">
+                      #{patient.id}
+                    </TableCell>
                     <TableCell className="font-medium">
                       {patient.firstName} {patient.lastName}
                     </TableCell>

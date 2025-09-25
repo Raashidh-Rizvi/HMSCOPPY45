@@ -5,10 +5,45 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useState, useEffect } from 'react';
+import api from '@/services/api';
 
 interface HeaderProps {
   onToggleSidebar: () => void;
 }
+
+const AnnouncementBadge: React.FC = () => {
+  const [unreadCount, setUnreadCount] = useState(0);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const response = await api.get('/announcements');
+        const announcements = response.data || [];
+        const filteredAnnouncements = announcements.filter(
+          (ann: any) => ann.targetRoles.includes('ALL') || ann.targetRoles.includes(user?.role || '')
+        );
+        const unread = filteredAnnouncements.filter((ann: any) => !ann.read).length;
+        setUnreadCount(unread);
+      } catch (error) {
+        setUnreadCount(0);
+      }
+    };
+
+    if (user) {
+      fetchUnreadCount();
+      const interval = setInterval(fetchUnreadCount, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [user]);
+
+  if (unreadCount === 0) return null;
+
+  return (
+    <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-full shadow-sm animate-pulse"></span>
+  );
+};
 
 const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
   const { user, logout } = useAuth();
@@ -53,7 +88,8 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
 
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-full shadow-sm"></span>
+            {/* Dynamic notification badge based on announcements */}
+            <AnnouncementBadge />
           </Button>
 
           <div className="flex items-center space-x-3">

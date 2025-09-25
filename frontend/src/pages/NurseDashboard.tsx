@@ -117,10 +117,10 @@ const NurseDashboard: React.FC = () => {
                             </Button>
                             <Button
                                 className="h-20 flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
-                                onClick={() => navigate('/app/reports')}
+                                onClick={() => navigate('/app/appointments')}
                             >
                                 <Clock className="w-6 h-6" />
-                                <span className="text-sm">Reports</span>
+                                <span className="text-sm">Appointments</span>
                             </Button>
                         </div>
                     </CardContent>

@@ -167,5 +167,12 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("Sample staff created successfully!");
         }
 
+        // Create sample announcements
+        createSampleAnnouncements();
+    }
+    
+    private void createSampleAnnouncements() {
+        // This would be handled by the AnnouncementService if we had sample data to create
+        System.out.println("Announcement system ready for use!");
     }
 }
