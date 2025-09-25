@@ -23,10 +23,13 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 && !error.config.url?.includes('/announcements')) {
+    if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
+    } else if (error.response?.status === 409 || error.response?.data?.message?.includes('already in use')) {
+      // Handle duplicate email errors
+      throw new Error('Email address is already in use');
     }
     return Promise.reject(error);
   }

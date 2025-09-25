@@ -123,40 +123,32 @@ const FeedbackSystem: React.FC = () => {
 
     return (
         <>
-            {/* Floating Feedback Button */}
-            <motion.div
-                className="fixed bottom-6 right-40 z-50"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 1.6 }}
-            >
+            {/* Footer Feedback Buttons */}
+            <div className="flex items-center space-x-2">
                 <Button
                     onClick={() => setShowFeedbackPanel(!showFeedbackPanel)}
-                    className="w-14 h-14 rounded-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200 relative"
+                    variant="ghost"
+                    size="sm"
+                    className="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 text-sm relative"
                 >
-                    <MessageSquare className="w-6 h-6" />
+                    <MessageSquare className="w-4 h-4 mr-1" />
+                    Feedback
                     {unreadCount > 0 && (
-                        <span className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                        <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                             {unreadCount}
                         </span>
                     )}
                 </Button>
-            </motion.div>
-
-            {/* Create Feedback Button */}
-            <motion.div
-                className="fixed bottom-6 right-56 z-50"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 1.8 }}
-            >
                 <Button
                     onClick={() => setShowCreateDialog(true)}
-                    className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-200"
+                    variant="ghost"
+                    size="sm"
+                    className="text-slate-500 dark:text-slate-400 hover:text-green-600 dark:hover:text-green-400 transition-colors duration-200 text-sm"
                 >
-                    <Plus className="w-5 h-5" />
+                    <Plus className="w-4 h-4 mr-1" />
+                    Submit
                 </Button>
-            </motion.div>
+            </div>
 
             {/* Feedback Panel */}
             <AnimatePresence>
@@ -165,7 +157,7 @@ const FeedbackSystem: React.FC = () => {
                         initial={{ opacity: 0, x: 400 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 400 }}
-                        className="fixed bottom-6 right-56 z-40 w-96 h-96 bg-white dark:bg-slate-800 rounded-lg shadow-2xl border border-slate-200 dark:border-slate-700"
+                        className="fixed bottom-20 right-6 z-40 w-96 h-96 bg-white dark:bg-slate-800 rounded-lg shadow-2xl border border-slate-200 dark:border-slate-700"
                     >
                         <div className="flex flex-col h-full">
                             <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700">

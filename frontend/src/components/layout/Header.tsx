@@ -6,6 +6,7 @@ import { Switch } from '@/components/ui/switch';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useState, useEffect } from 'react';
+import AnnouncementSystem from '@/components/announcements/AnnouncementSystem';
 import api from '@/services/api';
 
 interface HeaderProps {
@@ -88,8 +89,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
 
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="w-5 h-5" />
-            {/* Dynamic notification badge based on announcements */}
-            <AnnouncementBadge />
+            <AnnouncementSystem />
           </Button>
 
           <div className="flex items-center space-x-3">

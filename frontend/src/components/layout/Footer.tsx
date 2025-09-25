@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Stethoscope, Heart, Shield, Phone, Mail, MapPin } from 'lucide-react';
+import { MessageSquare, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import FeedbackSystem from '@/components/feedback/FeedbackSystem';
 
 const Footer: React.FC = () => {
   const navigate = useNavigate();
@@ -149,10 +151,12 @@ const Footer: React.FC = () => {
               <button className="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 text-sm">
                 Support
               </button>
+              <FeedbackSystem />
             </div>
           </div>
         </div>
       </div>
+      
     </motion.footer>
   );
 };

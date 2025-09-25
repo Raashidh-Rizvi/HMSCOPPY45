@@ -132,42 +132,16 @@ const AnnouncementSystem: React.FC = () => {
 
     return (
         <>
-            {/* Floating Announcement Button */}
-            <motion.div
-                className="fixed bottom-6 right-24 z-50"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 1.2 }}
-            >
-                <Button
-                    onClick={() => setShowAnnouncementPanel(!showAnnouncementPanel)}
-                    className="w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 shadow-lg hover:shadow-xl transition-all duration-200 relative"
-                >
-                    <Megaphone className="w-6 h-6" />
-                    {unreadCount > 0 && (
-                        <span className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-              {unreadCount}
-            </span>
-                    )}
-                </Button>
-            </motion.div>
-
-            {/* Admin Create Announcement Button */}
-            {user?.role === 'ADMINISTRATOR' && (
-                <motion.div
-                    className="fixed bottom-6 right-40 z-50"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 1.4 }}
-                >
-                    <Button
-                        onClick={() => setShowCreateDialog(true)}
-                        className="w-12 h-12 rounded-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200"
-                    >
-                        <Plus className="w-5 h-5" />
-                    </Button>
-                </motion.div>
+            {/* Bell Icon Badge */}
+            {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-full shadow-sm animate-pulse"></span>
             )}
+            
+            {/* Click handler for bell icon */}
+            <div 
+                className="absolute inset-0 cursor-pointer"
+                onClick={() => setShowAnnouncementPanel(!showAnnouncementPanel)}
+            />
 
             {/* Announcements Panel */}
             <AnimatePresence>
@@ -176,7 +150,7 @@ const AnnouncementSystem: React.FC = () => {
                         initial={{ opacity: 0, x: 400 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 400 }}
-                        className="fixed bottom-6 right-40 z-40 w-96 h-96 bg-white dark:bg-slate-800 rounded-lg shadow-2xl border border-slate-200 dark:border-slate-700"
+                        className="fixed top-16 right-6 z-50 w-96 h-96 bg-white dark:bg-slate-800 rounded-lg shadow-2xl border border-slate-200 dark:border-slate-700"
                     >
                         <div className="flex flex-col h-full">
                             {/* Header */}
@@ -187,14 +161,26 @@ const AnnouncementSystem: React.FC = () => {
                                         Announcements
                                     </h3>
                                 </div>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => setShowAnnouncementPanel(false)}
-                                    className="w-8 h-8"
-                                >
-                                    <X className="w-4 h-4" />
-                                </Button>
+                                <div className="flex items-center space-x-2">
+                                    {user?.role === 'ADMINISTRATOR' && (
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => setShowCreateDialog(true)}
+                                            className="w-8 h-8"
+                                        >
+                                            <Plus className="w-4 h-4" />
+                                        </Button>
+                                    )}
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => setShowAnnouncementPanel(false)}
+                                        className="w-8 h-8"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </Button>
+                                </div>
                             </div>
 
                             {/* Announcements List */}

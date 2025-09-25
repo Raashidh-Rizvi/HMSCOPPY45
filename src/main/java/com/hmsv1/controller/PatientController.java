@@ -3,6 +3,7 @@ package com.hmsv1.controller;
 import com.hmsv1.entity.Patient;
 import com.hmsv1.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,11 @@ public class PatientController {
 
     @PostMapping
     public Patient createPatient(@RequestBody Patient patient) {
-        return patientService.savePatient(patient);
+        try {
+            return patientService.savePatient(patient);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("Email address is already in use");
+        }
     }
 
     @PutMapping("/{id}")
@@ -45,7 +50,11 @@ public class PatientController {
             patient.setPhone(patientDetails.getPhone());
             patient.setEmail(patientDetails.getEmail());
             patient.setRegistrationDate(patientDetails.getRegistrationDate());
-            return ResponseEntity.ok(patientService.savePatient(patient));
+            try {
+                return ResponseEntity.ok(patientService.savePatient(patient));
+            } catch (DataIntegrityViolationException e) {
+                throw new RuntimeException("Email address is already in use");
+            }
         } else {
             return ResponseEntity.notFound().build();
         }

@@ -198,17 +198,17 @@ const AdminDashboard: React.FC = () => {
               </Button>
               <Button
                 className="h-20 flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700"
-                onClick={() => setIsSettingsOpen(true)}
-              >
-                <Settings className="w-6 h-6" />
-                <span className="text-sm">System Settings</span>
-              </Button>
-              <Button
-                className="h-20 flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
                 onClick={() => navigate('/app/permissions')}
               >
                 <Shield className="w-6 h-6" />
                 <span className="text-sm">Permissions</span>
+              </Button>
+              <Button
+                className="h-20 flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
+                onClick={() => setIsSettingsOpen(true)}
+              >
+                <Settings className="w-6 h-6" />
+                <span className="text-sm">System Settings</span>
               </Button>
               <Button
                 className="h-20 flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"

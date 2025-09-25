@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Search, Edit, Trash2, Eye, Users, UserCheck, Shield } from 'lucide-react';
+import { Plus, Search, FileEdit as Edit, Trash2, Eye, Users, UserCheck, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -82,7 +82,11 @@ const Staff: React.FC = () => {
       fetchData();
     } catch (error) {
       console.error('Error saving staff member:', error);
-      alert('Error saving staff member. Please try again.');
+      if (error.response?.status === 409 || error.response?.data?.message?.includes('email')) {
+        alert('Error: Email address is already in use. Please use a different email.');
+      } else {
+        alert('Error saving staff member. Please try again.');
+      }
     }
   };
 

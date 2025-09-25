@@ -148,7 +148,7 @@ const MessagingSystem: React.FC = () => {
     <>
       {/* Floating Message Button */}
       <motion.div
-        className="fixed bottom-6 right-6 z-50"
+        className="fixed bottom-6 right-6 z-40"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 1 }}
@@ -173,7 +173,7 @@ const MessagingSystem: React.FC = () => {
             initial={{ opacity: 0, x: 400 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 400 }}
-            className="fixed bottom-6 right-20 z-40 w-80 h-96 bg-white dark:bg-slate-800 rounded-lg shadow-2xl border border-slate-200 dark:border-slate-700"
+            className="fixed bottom-20 right-6 z-30 w-80 h-96 bg-white dark:bg-slate-800 rounded-lg shadow-2xl border border-slate-200 dark:border-slate-700"
           >
             <div className="flex flex-col h-full">
               {/* Header */}
