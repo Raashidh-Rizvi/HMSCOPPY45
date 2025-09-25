@@ -82,7 +82,7 @@ const AnnouncementSystem: React.FC = () => {
             };
 
             const response = await api.post('/announcements', newAnnouncement);
-            
+
             setShowCreateDialog(false);
             fetchAnnouncements(); // Refresh the list
         } catch (error) {
